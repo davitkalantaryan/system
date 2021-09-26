@@ -342,50 +342,11 @@ sssize_t WriteToDataPipe(THandle a_handle, pindex_t a_pipeIndex, const void* a_b
 }
 
 
-bool WaitAndClear(THandle a_handle,int a_timeoutMs, int* a_exeReturnCodePtr)
+bool Clear(THandle a_handle,int* a_exeReturnCodePtr)
 {
     int nWaited = 0;
     pid_t w;
     int status;
-    fd_set rfds, efds;
-    int nTry,maxsd(a_handle->pReadPipes[CONTROL_RD_EXE_PIPE].pipes[0]+1);
-    struct timeval		aTimeout;
-    struct timeval*		pTimeout;
-
-    FD_ZERO( &rfds );
-    FD_ZERO( &efds );
-
-    FD_SET( a_handle->pReadPipes[CONTROL_RD_EXE_PIPE].pipes[0], &rfds );
-    FD_SET( a_handle->pReadPipes[CONTROL_RD_EXE_PIPE].pipes[0], &efds );
-
-    if( a_timeoutMs >= 0 ){
-        aTimeout.tv_sec = a_timeoutMs / 1000;
-        aTimeout.tv_usec = (a_timeoutMs%1000)*1000 ;
-        pTimeout = &aTimeout;
-    }
-    else{pTimeout = SYSTEM_NULL;}
-
-    nTry = select(++maxsd, &rfds, SYSTEM_NULL, &efds, pTimeout );
-
-    switch(nTry)
-    {
-    case 0:	/* time out */
-        return false;
-    case -1:
-        if( errno == EINTR ){
-            /* interrupted by signal */
-            // todo: kill child and return true;
-            return false;
-            //return COMMON_SYSTEM_RW_INTERRUPTED;
-        }
-
-        //return COMMON_SYSTEM_UNKNOWN;
-        // todo: kill child and return true;
-        return false;
-    default:
-        // we can read
-        break;
-    }
 
     a_handle->shouldWait2=1;
 
@@ -430,6 +391,52 @@ bool WaitAndClear(THandle a_handle,int a_timeoutMs, int* a_exeReturnCodePtr)
     }
 
     return false;
+}
+
+
+bool WaitAndClear(THandle a_handle,int a_timeoutMs, int* a_exeReturnCodePtr)
+{
+    fd_set rfds, efds;
+    int nTry,maxsd(a_handle->pReadPipes[CONTROL_RD_EXE_PIPE].pipes[0]+1);
+    struct timeval		aTimeout;
+    struct timeval*		pTimeout;
+
+    FD_ZERO( &rfds );
+    FD_ZERO( &efds );
+
+    FD_SET( a_handle->pReadPipes[CONTROL_RD_EXE_PIPE].pipes[0], &rfds );
+    FD_SET( a_handle->pReadPipes[CONTROL_RD_EXE_PIPE].pipes[0], &efds );
+
+    if( a_timeoutMs >= 0 ){
+        aTimeout.tv_sec = a_timeoutMs / 1000;
+        aTimeout.tv_usec = (a_timeoutMs%1000)*1000 ;
+        pTimeout = &aTimeout;
+    }
+    else{pTimeout = SYSTEM_NULL;}
+
+    nTry = select(++maxsd, &rfds, SYSTEM_NULL, &efds, pTimeout );
+
+    switch(nTry)
+    {
+    case 0:	/* time out */
+        return false;
+    case -1:
+        if( errno == EINTR ){
+            /* interrupted by signal */
+            // todo: kill child and return true;
+            return false;
+            //return COMMON_SYSTEM_RW_INTERRUPTED;
+        }
+
+        //return COMMON_SYSTEM_UNKNOWN;
+        // todo: kill child and return true;
+        return false;
+    default:
+        // we can read
+        break;
+    }
+
+    return Clear(a_handle,a_exeReturnCodePtr);
 }
 
 

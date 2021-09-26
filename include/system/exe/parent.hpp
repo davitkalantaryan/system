@@ -25,6 +25,7 @@ sssize_t ReadDataFromPipe(THandle handle, pindex_t index, void* buffer, size_t b
 sssize_t WriteToStdIn(THandle handle,const void* buffer, size_t bufferSize);
 sssize_t WriteToDataPipe(THandle handle, pindex_t pipeIndex, const void* buffer, size_t bufferSize);
 bool     WaitAndClear(THandle handle,int timeoutMs, int* exeReturnCodePtr);
+bool     Clear(THandle a_handle,int* a_exeReturnCodePtr);
 //uint64_t IsExeFinished(THandle handle);
 
 }}} // namespace systemN { namespace exe { namespace parent{
