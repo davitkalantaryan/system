@@ -222,6 +222,28 @@ THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
 }
 
 
+bool Clear(THandle a_handle, int* a_exeReturnCodePtr)
+{
+	DWORD dwWaitReturn;
+	bool bReturn(true);
+
+	if(a_handle->prcInfo.hProcess){
+		dwWaitReturn = WaitForSingleObject(a_handle->prcInfo.hProcess, INFINITE);
+		if (dwWaitReturn != WAIT_OBJECT_0) {
+			AfterProcessTermination(a_handle);
+			bReturn = false;
+		}
+	}
+
+	if (bReturn) {
+		if(a_exeReturnCodePtr){*a_exeReturnCodePtr = static_cast<int>(a_handle->exeReturnCode);}
+		Clear(a_handle);
+	}
+
+	return bReturn;
+}
+
+
 bool WaitAndClear(THandle a_handle, int a_timeoutMs, int* a_exeReturnCodePtr)
 {
 	DWORD dwWaitReturn;

@@ -107,7 +107,7 @@ returnPoint:
 	handle_t* pCurHandle;
 	BOOL bRetByReadEx;
 	DWORD nNumberOfValidPipes(0);
-	SPipeHelperData aHelper{0,-1};
+	SPipeHelperData aHelper{0,-1,0};
 	SOverlapped* pOverlapped = static_cast<SOverlapped*>( calloc(a_handlesCount,sizeof(struct SOverlapped)) );
 
 	if(!pOverlapped){
@@ -161,14 +161,14 @@ returnPoint:
 	}
 
 	if (aHelper.errorCode) {
-		pCurHandle = (*a_fpHandleGetter)(a_handlesParent, aHelper.indexOfReader);
+		pCurHandle = (*a_fpHandleGetter)(a_handlesParent, static_cast<pindex_t>(aHelper.indexOfReader));
         CloseHandle(*pCurHandle); *pCurHandle = SYSTEM_NULL;
 		ssnReturn = COMMON_SYSTEM_PIPE_CLOSED;
 		goto returnPoint;
 	}
 
 	*a_pReadSize = static_cast<sssize_t>(aHelper.sizeReaded);
-	ssnReturn= aHelper.indexOfReader;
+	ssnReturn= static_cast<pindex_t>(aHelper.indexOfReader);
 returnPoint:
 
 	for(i=0;i< a_handlesCount;++i){
