@@ -35,7 +35,7 @@ SYSTEM_BEGIN_C
 typedef DWORD ssize_t;
 typedef HMODULE LibHandleType;
 
-int sys_dprintf(HANDLE a_file, const char* a_cpcFormat, ...);
+//int sys_dprintf(HANDLE a_file, const char* a_cpcFormat, ...);
 
 #else   // #ifdef _WIN32
 

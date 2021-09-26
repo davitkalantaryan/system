@@ -113,12 +113,14 @@
 
 #ifdef __cplusplus
 #define SYSTEM_STATIC_CAST(_type,_data)	static_cast<_type>(_data)
+#define SYSTEM_REINTERPRET_CAST(_type,_data)	reinterpret_cast<_type>(_data)
 #define SYSTEM_GLOBAL	   ::
 #define SYSTEM_BEGIN_C   extern "C" {
 #define SYSTEM_END_C     }
 #define SYSTEM_EXTERN_C  extern "C"
 #else
 #define SYSTEM_STATIC_CAST(_type,_data)	((_type)(_data))
+#define SYSTEM_REINTERPRET_CAST(_type,_data)	((_type)(_data))
 #define SYSTEM_GLOBAL
 #define SYSTEM_BEGIN_C
 #define SYSTEM_END_C

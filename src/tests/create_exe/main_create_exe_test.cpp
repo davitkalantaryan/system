@@ -10,8 +10,10 @@ int main(int a_argc, char* a_argv[])
     //vArgv[0] = vName;
     //vArgv[1] = nullptr;
 
+#ifndef _WIN32
     printf("Press any key then enter to proceed! "); fflush(stdout);
     getchar();
+#endif
 
     if(a_argc<2){
         ::std::cerr<< "provide exe name to run\n";
