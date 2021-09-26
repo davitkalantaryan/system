@@ -10,6 +10,8 @@
 #define COMMON_SYSTEM_EXE_PARENT_HPP
 
 #include <system_internal_header.h>
+#ifdef SYSTEM_EXE_START_IS_POSSIBLE
+
 #include <system/exe/parent_child_common.hpp>
 
 #define EXE_WAS_NOT_FOUND				1
@@ -40,4 +42,7 @@ namespace std{
 #endif
 
 
-#endif  // #ifndef COMMON_SYSTEM_EXE_PARENT_HPP
+#endif  // #ifdef DEVSHEET_EXE_START_IS_POSSIBLE
+
+
+#endif  // #ifndef SYSTEM_EXE_START_IS_POSSIBLE

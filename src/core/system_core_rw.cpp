@@ -6,6 +6,9 @@
 // Here is functions, that is used to call system routines and binaries
 //
 
+#include <system_internal_header.h>
+#ifdef SYSTEM_EXE_START_IS_POSSIBLE
+
 #include <system/rw.hpp>
 #include <vector>
 #include <utility>
@@ -275,3 +278,6 @@ namespace std{
 
 }
 #endif
+
+
+#endif  // #ifdef DEVSHEET_EXE_START_IS_POSSIBLE

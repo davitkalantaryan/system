@@ -9,6 +9,9 @@
 #ifndef COMMON_SYSTEM_EXE_CHILD_HPP
 #define COMMON_SYSTEM_EXE_CHILD_HPP
 
+#include <system_internal_header.h>
+#ifdef SYSTEM_EXE_START_IS_POSSIBLE
+
 #include <system/exe/parent_child_common.hpp>
 
 
@@ -23,6 +26,7 @@ sssize_t WriteDataToParent(pindex_t index, const void* buff, size_t count);
 
 }}} // namespace systemN { namespace exe { namespace child {
 
+#endif  // #ifdef SYSTEM_EXE_START_IS_POSSIBLE
 
 
 #endif  // #ifndef COMMON_SYSTEM_EXE_CHILD_HPP

@@ -6,6 +6,9 @@
 // Here is functions, that is used to call system routines and binaries
 //
 
+#include <system_internal_header.h>
+#ifdef SYSTEM_EXE_START_IS_POSSIBLE
+
 #ifndef _WIN32
 
 #include <string.h> // we hope that strcspn is rejecting case
@@ -521,3 +524,5 @@ static void Clear(struct SHandle* a_handle)
 }}} // namespace systemN { namespace exe { namespace parent{
 
 #endif  // #ifndef _WIN32
+
+#endif  // #ifdef SYSTEM_EXE_START_IS_POSSIBLE

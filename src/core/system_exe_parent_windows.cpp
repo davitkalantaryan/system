@@ -7,6 +7,9 @@
 //
 
 
+#include <system_internal_header.h>
+#ifdef SYSTEM_EXE_START_IS_POSSIBLE
+
 #ifdef _WIN32
 
 #include <system/exe/parent.hpp>
@@ -605,3 +608,6 @@ void SPipeStruct::DestroyPipeStruct(void)
 
 
 #endif  // #ifdef _WIN32
+
+
+#endif  // #ifdef DEVSHEET_EXE_START_IS_POSSIBLE

@@ -10,6 +10,8 @@
 #define COMMON_SYSTEM_RW_HPP
 
 #include <system_internal_header.h>
+#ifdef SYSTEM_EXE_START_IS_POSSIBLE
+
 #include <stddef.h>
 #include <string>
 #include <stdint.h>
@@ -74,5 +76,8 @@ pindex_t ReadFromManyPipes(
 
 
 #endif  // #ifdef __cplusplus
+
+
+#endif  // #ifdef SYSTEM_EXE_START_IS_POSSIBLE
 
 #endif  // #ifndef COMMON_SYSTEM_RW_HPP
