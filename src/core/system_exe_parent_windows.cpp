@@ -289,7 +289,13 @@ sssize_t WriteToStdIn(THandle a_handle, const void* a_buffer, size_t a_bufferSiz
 //	return static_cast<int>(dwWaitReturn);
 //}
 
-sssize_t ReadDataFromPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
+sssize_t ReadFromDataPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
+{
+	return ReadFromAnyPipe(a_handle,a_pipeIndex+DATA_0_FROM_CHILD_EXE_PIPE,a_buffer,a_bufferSize,a_timeoutMs);
+}
+
+
+sssize_t ReadFromAnyPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
 {
 	struct SPipeIndexStructPrivate {
 		THandle hndl;
@@ -299,7 +305,6 @@ sssize_t ReadDataFromPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer
 	sssize_t readReturn;
 	void* vBuffers[1] = { a_buffer };
 	const size_t vBufferSizes[1] = { a_bufferSize };
-	a_pipeIndex += DATA_0_FROM_CHILD_EXE_PIPE;
 	if (a_pipeIndex >= a_handle->numberOfReadFromChildPipes) { return OUT_OF_INDEX; }
 	aPipeIndStr.pPipe = &(a_handle->pReadPipes[a_pipeIndex].pr);
 	ReadFromManyPipes(

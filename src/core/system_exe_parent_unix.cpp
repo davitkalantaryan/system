@@ -310,14 +310,20 @@ pindex_t ReadFromAllPipes(THandle a_handle,void** a_buffers,const size_t* a_buff
 
 
 static inline handle_t* HandleGetterFunction2(void* a_handleInner, pindex_t){return static_cast<handle_t*>(a_handleInner);}
-sssize_t ReadDataFromPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
+sssize_t ReadFromDataPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
+{
+	return ReadFromAnyPipe(a_handle,a_pipeIndex+DATA_0_FROM_CHILD_EXE_PIPE,a_buffer,a_bufferSize,a_timeoutMs);
+}
+
+
+sssize_t ReadFromAnyPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
 {
     void* vBuffers[] = {a_buffer};
     size_t vBuffersSizes[] = {a_bufferSize};
     sssize_t readReturn(-1);
 
     ReadFromManyPipes(
-        &(a_handle->pReadPipes[DATA_0_FROM_CHILD_EXE_PIPE+a_pipeIndex].pipes[0]),1,
+        &(a_handle->pReadPipes[a_pipeIndex].pipes[0]),1,
         //[](void* a_handleInner, pindex_t a_pipeIndex) {return &(static_cast<THandle>(a_handleInner)->pReadPipes[a_pipeIndex].pr);},
         &HandleGetterFunction2,
         vBuffers,vBuffersSizes,&readReturn,a_timeoutMs,

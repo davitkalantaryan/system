@@ -55,51 +55,6 @@ pindex_t ReadFromManyPipes(
 {
 #if 0
 
-	pindex_t ssnReturn(COMMON_SYSTEM_UNKNOWN);
-	pindex_t i;
-	handle_t* pCurHandle;
-	int nNumberOfValidPipes(0);
-	pindex_t dwWaitIndex;
-	HANDLE* pHandles = static_cast<HANDLE*>(calloc(a_handlesCount, sizeof(HANDLE)));
-
-	if (!pHandles) {
-		return COMMON_SYSTEM_RW_NO_MEM; // no need to jump to return for cleanup
-	}
-
-	for (i = 0; i < a_handlesCount; ++i) {
-		if (a_buffersSizes[i]) {
-			pCurHandle = (*a_fpHandleGetter)(a_handlesParent, i);
-			if (*pCurHandle) {
-				pHandles[nNumberOfValidPipes++] = *pCurHandle;
-			}
-		}
-
-	}
-
-	if (!nNumberOfValidPipes) {
-		ssnReturn = NO_HANDLE_EXIST2;
-		goto returnPoint;
-	}
-
-	dwWaitIndex = static_cast<pindex_t>(WaitForMultipleObjects(nNumberOfValidPipes,pHandles,TRUE,a_timeoutMs));
-	dwWaitIndex -= WAIT_OBJECT_0;
-
-	if((dwWaitIndex<0)||(dwWaitIndex>=a_handlesCount)){
-		ssnReturn = OUT_OF_INDEX;
-		goto returnPoint;
-	}
-
-
-    if(!ReadFile(pHandles[dwWaitIndex],a_buffers[dwWaitIndex],static_cast<DWORD>(a_buffersSizes[dwWaitIndex]),a_pReadSize,SYSTEM_NULL)){
-		ssnReturn = UNABLE_TO_READ;
-		goto returnPoint;
-	}
-	
-	ssnReturn = dwWaitIndex;
-returnPoint:
-	free(pHandles);
-	return ssnReturn;
-
 #else
 	pindex_t ssnReturn(COMMON_SYSTEM_UNKNOWN);
 	pindex_t i;
@@ -166,8 +121,7 @@ returnPoint:
 		ssnReturn = COMMON_SYSTEM_PIPE_CLOSED;
 		goto returnPoint;
 	}
-
-	*a_pReadSize = static_cast<sssize_t>(aHelper.sizeReaded);
+	
 	ssnReturn= static_cast<pindex_t>(aHelper.indexOfReader);
 returnPoint:
 
@@ -182,6 +136,7 @@ returnPoint:
 		}
 	
 	}
+	*a_pReadSize = static_cast<sssize_t>(aHelper.sizeReaded);
 	//SleepEx(1, TRUE); // wait for io comletion
 	free(pOverlapped);
 	return ssnReturn;
@@ -195,15 +150,15 @@ static VOID WINAPI OVERLAPPED_READ_COMPLETION_ROUTINE_GEN_STAT(
 	_In_    DWORD a_dwNumberOfBytesTransfered,
 	_Inout_ LPOVERLAPPED a_lpOverlapped)
 {
+	struct SOverlapped* pPipeStr = lblcontainer_of(a_lpOverlapped, struct SOverlapped, ovrlp);
 	stl_isAsyncIoDone = 1;
+	pPipeStr->pHelper->errorCode = a_dwErrorCode;
 	if((a_dwErrorCode!=ERROR_OPERATION_ABORTED)&&(a_dwErrorCode!=ERROR_MR_MID_NOT_FOUND)&&(a_dwErrorCode!=ERROR_SCOPE_NOT_FOUND) ){
-		struct SOverlapped* pPipeStr = lblcontainer_of(a_lpOverlapped, struct SOverlapped, ovrlp);
 		pPipeStr->pHelper->indexOfReader = int32_t(pPipeStr->index);
-		pPipeStr->pHelper->errorCode = a_dwErrorCode;
-		if (!a_dwErrorCode) {
-			pPipeStr->pHelper->sizeReaded = a_dwNumberOfBytesTransfered;
-		}
+		if (a_dwErrorCode) {pPipeStr->pHelper->sizeReaded = -1;}
+		else{pPipeStr->pHelper->sizeReaded = a_dwNumberOfBytesTransfered;}
 	}
+	else {pPipeStr->pHelper->sizeReaded = -1;}
 }
 
 
