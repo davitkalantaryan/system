@@ -160,4 +160,13 @@
 #endif
 
 
+#if defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN) || defined(SYSTEM_WASM)
+#define SYSTEM_EMSCRIPTEN_IS_USED
+#endif
+
+#if !defined(SYSTEM_EMSCRIPTEN_IS_USED) // todo: continue list
+#define SYSTEM_EXE_START_IS_POSSIBLE
+#endif
+
+
 #endif  // #ifndef INCLUDE_SYSTEM_INTERNAL_HEADER_H
