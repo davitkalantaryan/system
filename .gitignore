@@ -1,72 +1,96 @@
-# Prerequisites
-*.d
+## Prerequisites
+#*.d
+#
+## Compiled Object files
+#*.slo
+#*.lo
+#*.o
+#*.obj
+#
+## Precompiled Headers
+#*.gch
+#*.pch
+#
+## Compiled Dynamic libraries
+#*.so
+#*.dylib
+#*.dll
+#
+## Fortran module files
+#*.mod
+#*.smod
+#
+## Compiled Static libraries
+#*.lai
+#*.la
+#*.a
+#*.lib
+#
+## Executables
+#*.exe
+#*.out
+#*.app
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+*_d_obj
+*_r_obj
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-vc140.*
+/.tests
 
 /.vs
-/out
-/sys
-
+/deploy
 /build
 /tests
+/contrib/emsdk_version_*_prepared
 
+*.d
+*.zip
+/contrib/apache-maven
+
+/src/gen
+
+/sys
+/prj/*/*/*
 /workspaces/*/*
 
-!/workspaces/*_qt/*.pro
-!/workspaces/*_qt/*.pri
 
-!/workspaces/*_vs/*.sln
-!/workspaces/*_vs/*.vcxproj
-!/workspaces/*_vs/*.vcxproj.filters
-!/workspaces/*_vs/*.props
-
-
-/prj/*/*/*
-
-!/prj/*/*_qt/*.pro
 !/prj/*/*_qt/*.pri
-
+!/prj/*/*_qt/*.pro
+!/prj/*/*_qt/platform
+#/prj/*/*_qt/platform/android/manifest/res
+#
 !/prj/*/*_vs/*.sln
 !/prj/*/*_vs/*.vcxproj
 !/prj/*/*_vs/*.vcxproj.filters
 !/prj/*/*_vs/*.props
-
+#
 !/prj/*/*_mkfl/*Makefile*
-
+#
+!/prj/*/*_mult/*Makefile
 !/prj/*/*_mult/*.sln
 !/prj/*/*_mult/*.vcxproj
 !/prj/*/*_mult/*.vcxproj.filters
-!/prj/*/*_mult/packages.config*
-!/prj/*/*_mult/*Makefile*
+!/prj/*/*_mult/packages.config
 !/prj/*/*_mult/*.pro
-/prj/tests/googletest_mult/Makefile*googletest_getter
+
+!/workspaces/*_qt/*.pri
+!/workspaces/*_qt/*.pro
+#
+!/workspaces/*_vs/*.sln
+!/workspaces/*_vs/*.vcxproj
+!/workspaces/*_vs/*.vcxproj.filters
+
+#/scripts/test_include_sourse.sh
+
+prj/tests/googletest_mult/Makefile.googletest_getter
+
+/.private
+/package/*.exe
+/package/packages/*/data
+/package/packages/*/meta/license.txt
+/package/config/*.png
+/package/config/*.ico
+/package/config/*.icns
+
+/prj/core/zlib_st_vs/zlib_st.vcxproj.filters
+/prj/core/zlib_vs/zlib.vcxproj.filters
+/prj/core/zlib_st_dl_vs/zlib_st_dl.vcxproj.filters
