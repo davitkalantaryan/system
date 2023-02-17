@@ -6,16 +6,16 @@
 // Here is functions, that is used to call system routines and binaries
 //
 
+#include <system/exe/parent_child_common.hpp>
+#include "system_include_private.hpp"
 #include <string.h> // we hope that strcspn is rejecting case
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "common_system_include_private.hpp"
 #include <sys/wait.h>
 #include <signal.h>
 #include <alloca.h>
 #include <string>
-#include <common_system_exe_parent_child_common.h>
 
 #ifndef SleepEx
 #define SleepEx(_x,_alrt)   usleep(1000*(_x))
@@ -29,8 +29,7 @@
 #define ALLOCATION_COUNT_STEP   8
 
 
-//namespace common{ namespace system { namespace exe{
-namespace common{ namespace system { namespace exe { namespace parent{
+namespace systemN { namespace exe { namespace parent{
 
 // TExecHandle RunExecutableNoWaitLine(char* argumentsLine)
 
@@ -42,7 +41,7 @@ static const char* s_sccpAcceptReject = " \t\n\r";
 static void Clear(struct SHandle* a_handle);
 
 
-DAQ_DH_EXPORT THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWriteToChildDataPipes,char* a_commandLine,const char* a_cpcAdditionalSearchPath, uint8_t a_bUsingStdPipes)
+SYSTEM_EXPORT THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWriteToChildDataPipes,char* a_commandLine,const char* a_cpcAdditionalSearchPath, uint8_t a_bUsingStdPipes)
 {
     THandle hReturn;
     size_t unStrStrResult;
@@ -79,7 +78,7 @@ DAQ_DH_EXPORT THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t
 }
 
 
-DAQ_DH_EXPORT THandle RunNoWaitU(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWriteToChildDataPipes, char* a_argv[], const char* a_cpcAdditionalSearchPath, uint8_t a_bUsingStdPipes)
+SYSTEM_EXPORT THandle RunNoWaitU(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWriteToChildDataPipes, char* a_argv[], const char* a_cpcAdditionalSearchPath, uint8_t a_bUsingStdPipes)
 {
     int8_t pipeIndex;
     int8_t numberOfReadFromChildPipes;
@@ -504,4 +503,4 @@ static void Clear(struct SHandle* a_handle)
 
 
 
-}}}} // namespace common{ namespace system { namespace exe { namespace parent{
+}}}  //  namespace systemN { namespace exe { namespace parent{

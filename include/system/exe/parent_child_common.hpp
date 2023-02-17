@@ -9,6 +9,8 @@
 #ifndef COMMON_SYSTEM_EXE_PARENT_CHILD_COMMON_HPP
 #define COMMON_SYSTEM_EXE_PARENT_CHILD_COMMON_HPP
 
+
+#include <system/export_symbols.h>
 #include <system/rw.hpp>
 
 
