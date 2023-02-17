@@ -9,12 +9,7 @@
 #ifndef COMMON_SYSTEM_EXE_PARENT_CHILD_COMMON_HPP
 #define COMMON_SYSTEM_EXE_PARENT_CHILD_COMMON_HPP
 
-#include <system_internal_header.h>
-#ifdef SYSTEM_EXE_START_IS_POSSIBLE
+#include <common/system/rw.hpp>
 
-#include <system/rw.hpp>
-
-
-#endif  // #ifdef SYSTEM_EXE_START_IS_POSSIBLE
 
 #endif  // #ifndef COMMON_SYSTEM_EXE_PARENT_CHILD_COMMON_HPP

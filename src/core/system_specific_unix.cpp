@@ -6,9 +6,4 @@
 // This header is for ...
 //
 
-#ifndef _WIN32
-
 #include <system_specific_definations.h>
-
-
-#endif   // #ifndef _WIN32

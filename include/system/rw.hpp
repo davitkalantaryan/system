@@ -6,12 +6,13 @@
 // This header is for functions, that is used to call system routines and binaries
 //
 
+#pragma once
+
 #ifndef COMMON_SYSTEM_RW_HPP
 #define COMMON_SYSTEM_RW_HPP
 
-#include <system_internal_header.h>
-#ifdef SYSTEM_EXE_START_IS_POSSIBLE
-
+#include <daq/data_handling/export_symbols.h>
+//#include <pitz_daq_data_handling_internal.h>
 #include <stddef.h>
 #include <string>
 #include <stdint.h>
@@ -19,7 +20,7 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <Windows.h>
-#define UNINITED_HANDLE	SYSTEM_NULL
+#define UNINITED_HANDLE	NEWNULLPTR2
 typedef DWORD		sssize_t;
 typedef HANDLE		handle_t;
 #else
@@ -65,19 +66,16 @@ typedef sssize_t (*WaitFunctionType)(void*, int timeoutMs);
 
 #ifdef __cplusplus
 
-namespace systemN {
+namespace common{ namespace system {
 
-sssize_t WriteToHandle(handle_t handle,const void* buffer, size_t bufferSize);
-pindex_t ReadFromManyPipes(
+DAQ_DH_EXPORT sssize_t WriteToHandle(handle_t handle,const void* buffer, size_t bufferSize);
+DAQ_DH_EXPORT pindex_t ReadFromManyPipes(
 	void* handlesParent, pindex_t handlesCount, HandleGetterType fpHandleGetter, 
 	void** buffers, const size_t* buffersSizes, sssize_t* pReadSize, int timeoutMs, WaitFunctionType a_fpWait);
 
-} // namespace systemN {
+}} // namespace common{ namespace system {
 
 
 #endif  // #ifdef __cplusplus
-
-
-#endif  // #ifdef SYSTEM_EXE_START_IS_POSSIBLE
 
 #endif  // #ifndef COMMON_SYSTEM_RW_HPP

@@ -6,7 +6,7 @@
 // Here is functions, that is used to call system routines and binaries
 //
 
-#include <system/handlelib.hpp>
+#include <common/system/handlelib.hpp>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -38,7 +38,7 @@
 
 #endif
 
-namespace systemN {
+namespace common{ namespace system {
 
 
 void* LoadDynLib(const char* a_libraryName)
@@ -73,4 +73,4 @@ void UnloadDynLib(void* a_libraryHandle)
 #endif
 }
 
-} // namespace systemN {
+}} // namespace common{ namespace system {

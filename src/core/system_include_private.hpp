@@ -6,14 +6,14 @@
 #define COMMON_SYSTEM_INCLUDE_PRIVATE_HPP
 
 
-#include <system/exe/parent.hpp>
+#include <common/system/exe/parent.hpp>
 #include <stdint.h>
 #include <string>
 
 //#define MAKE_SOME_TESTS
 
 
-namespace systemN { namespace exe { namespace parent{
+namespace common{ namespace system { namespace exe { namespace parent{
 
 
 #ifdef _WIN32
@@ -76,6 +76,6 @@ struct SHandle {
 
 #endif  // #ifdef _WIN32
 
-}}}  // namespace systemN { namespace exe { namespace parent{
+}}}}  // namespace common{ namespace system { namespace exe { namespace parent{
 
 #endif  // #ifndef COMMON_SYSTEM_INCLUDE_PRIVATE_HPP
