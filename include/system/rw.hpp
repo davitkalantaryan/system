@@ -11,8 +11,7 @@
 #ifndef COMMON_SYSTEM_RW_HPP
 #define COMMON_SYSTEM_RW_HPP
 
-#include <daq/data_handling/export_symbols.h>
-//#include <pitz_daq_data_handling_internal.h>
+#include <system/export_symbols.h>
 #include <stddef.h>
 #include <string>
 #include <stdint.h>
@@ -66,14 +65,14 @@ typedef sssize_t (*WaitFunctionType)(void*, int timeoutMs);
 
 #ifdef __cplusplus
 
-namespace common{ namespace system {
+namespace systemN {
 
-DAQ_DH_EXPORT sssize_t WriteToHandle(handle_t handle,const void* buffer, size_t bufferSize);
-DAQ_DH_EXPORT pindex_t ReadFromManyPipes(
+SYSTEM_EXPORT sssize_t WriteToHandle(handle_t handle,const void* buffer, size_t bufferSize);
+SYSTEM_EXPORT pindex_t ReadFromManyPipes(
 	void* handlesParent, pindex_t handlesCount, HandleGetterType fpHandleGetter, 
 	void** buffers, const size_t* buffersSizes, sssize_t* pReadSize, int timeoutMs, WaitFunctionType a_fpWait);
 
-}} // namespace common{ namespace system {
+}  //  namespace systemN {
 
 
 #endif  // #ifdef __cplusplus

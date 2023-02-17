@@ -6,14 +6,14 @@
 // Here is functions, that is used to call system routines and binaries
 //
 
+#include <system/rw.hpp>
+#include <vector>
+#include <utility>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <common/system/rw.hpp>
-#include <vector>
-#include <utility>
 
-namespace common{ namespace system { 
+namespace systemN { 
 
 #ifdef _WIN32
 
@@ -44,7 +44,7 @@ static thread_local int  stl_isAsyncIoDone = 0;
 sssize_t WriteToHandle(handle_t a_pipeHandle, const void* a_buffer, size_t a_bufferSize)
 {
 	DWORD dwSize;
-	BOOL bRet(WriteFile(a_pipeHandle, a_buffer, static_cast<DWORD>(a_bufferSize), &dwSize, NEWNULLPTR2));
+	BOOL bRet(WriteFile(a_pipeHandle, a_buffer, static_cast<DWORD>(a_bufferSize), &dwSize, CPPUTILS_NULL));
 	return bRet ? dwSize : -1;
 }
 
@@ -90,7 +90,7 @@ pindex_t ReadFromManyPipes(
 	}
 
 
-	if(!ReadFile(pHandles[dwWaitIndex],a_buffers[dwWaitIndex],static_cast<DWORD>(a_buffersSizes[dwWaitIndex]),a_pReadSize,NEWNULLPTR2)){
+	if(!ReadFile(pHandles[dwWaitIndex],a_buffers[dwWaitIndex],static_cast<DWORD>(a_buffersSizes[dwWaitIndex]),a_pReadSize,CPPUTILS_NULL)){
 		ssnReturn = UNABLE_TO_READ;
 		goto returnPoint;
 	}
@@ -131,7 +131,7 @@ returnPoint:
 					&pOverlapped[i].ovrlp,
 					&OVERLAPPED_READ_COMPLETION_ROUTINE_GEN_STAT);
 				if(bRetByReadEx){++nNumberOfValidPipes;}
-				else{CloseHandle(*pCurHandle);*pCurHandle=NEWNULLPTR2;}
+				else{CloseHandle(*pCurHandle);*pCurHandle=CPPUTILS_NULL;}
 			}
 		}
 	
@@ -162,7 +162,7 @@ returnPoint:
 
 	if (aHelper.errorCode) {
 		pCurHandle = (*a_fpHandleGetter)(a_handlesParent, aHelper.indexOfReader);
-		CloseHandle(*pCurHandle); *pCurHandle = NEWNULLPTR2;
+		CloseHandle(*pCurHandle); *pCurHandle = CPPUTILS_NULL;
 		ssnReturn = COMMON_SYSTEM_PIPE_CLOSED;
 		goto returnPoint;
 	}
@@ -210,13 +210,13 @@ static VOID WINAPI OVERLAPPED_READ_COMPLETION_ROUTINE_GEN_STAT(
 #else    // #ifdef _WIN32
 
 
-DAQ_DH_EXPORT sssize_t WriteToHandle(handle_t a_pipeHandle, const void* a_buffer, size_t a_bufferSize)
+SYSTEM_EXPORT sssize_t WriteToHandle(handle_t a_pipeHandle, const void* a_buffer, size_t a_bufferSize)
 {
         return write(a_pipeHandle, a_buffer, a_bufferSize);
 }
 
 
-DAQ_DH_EXPORT pindex_t ReadFromManyPipes(
+SYSTEM_EXPORT pindex_t ReadFromManyPipes(
     void* a_handlesParent, pindex_t a_handlesCount, HandleGetterType a_fpHandleGetter,
     void** a_buffers, const size_t* a_buffersSizes, sssize_t* a_pReadSize, int a_timeoutMs, WaitFunctionType)
 {
@@ -306,7 +306,7 @@ DAQ_DH_EXPORT pindex_t ReadFromManyPipes(
 
 
 
-}} // namespace common{ namespace system { 
+}  //  namespace systemN { 
 
 #ifndef CPPUTILS_CPP_11_DEFINED
 namespace std{

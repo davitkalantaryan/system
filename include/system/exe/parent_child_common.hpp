@@ -9,7 +9,7 @@
 #ifndef COMMON_SYSTEM_EXE_PARENT_CHILD_COMMON_HPP
 #define COMMON_SYSTEM_EXE_PARENT_CHILD_COMMON_HPP
 
-#include <common/system/rw.hpp>
+#include <system/rw.hpp>
 
 
 #endif  // #ifndef COMMON_SYSTEM_EXE_PARENT_CHILD_COMMON_HPP
