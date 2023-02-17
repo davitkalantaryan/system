@@ -6,10 +6,9 @@
 // Here is functions, that is used to call system routines and binaries
 //
 
-#include <common/system/exe/child.hpp>
-#include <pitz_daq_data_handling_internal2.h>
-#include <common/system/rw.hpp>
-#include <common_system_exe_parent_child_common.h>
+#include <system/exe/child.hpp>
+#include <system/rw.hpp>
+#include <private/system/exe_parent_child_common.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <stdio.h>
@@ -22,7 +21,7 @@
 #pragma warning (disable:4996)
 #endif
 #ifdef _WIN32
-#define CLOSEDPIPE2	NEWNULLPTR2
+#define CLOSEDPIPE2	CPPUTILS_NULL
 #else
 #define	CloseHandle	close
 #define CLOSEDPIPE2	-1
@@ -44,16 +43,16 @@ static handle_t  s_nControlPipeToParent = UNINITED_HANDLE;
 static handle_t  s_nControlPipeFromParent = UNINITED_HANDLE;
 
 
-namespace common{ namespace system { namespace exe { namespace child {
+namespace systemN { namespace exe { namespace child {
 
 
-DAQ_DH_EXPORT bool IsCommunicationWithParentInited(void)
+SYSTEM_EXPORT bool IsCommunicationWithParentInited(void)
 {
     return s_bIsInited;
 }
 
 
-DAQ_DH_EXPORT pindex_t ReadDataFromAllParentPipes(void** a_buffers, const size_t* a_buffersSizes, sssize_t* a_pReadSize, int a_timeoutMs)
+SYSTEM_EXPORT pindex_t ReadDataFromAllParentPipes(void** a_buffers, const size_t* a_buffersSizes, sssize_t* a_pReadSize, int a_timeoutMs)
 {
 
 	if(!s_pnDataPipeFromParent){return NO_HANDLE_EXIST2;}
@@ -64,7 +63,7 @@ DAQ_DH_EXPORT pindex_t ReadDataFromAllParentPipes(void** a_buffers, const size_t
 }
 
 
-DAQ_DH_EXPORT sssize_t ReadDataFromParent(pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
+SYSTEM_EXPORT sssize_t ReadDataFromParent(pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
 {
 	sssize_t readReturn(0);
 	void* vBuffers[1] = { a_buffer };
@@ -80,7 +79,7 @@ DAQ_DH_EXPORT sssize_t ReadDataFromParent(pindex_t a_pipeIndex, void* a_buffer, 
 }
 
 
-DAQ_DH_EXPORT sssize_t WriteDataToParent(pindex_t a_pipeIndex, const void* a_buffer, size_t a_bufferSize)
+SYSTEM_EXPORT sssize_t WriteDataToParent(pindex_t a_pipeIndex, const void* a_buffer, size_t a_bufferSize)
 {
 	if (!s_pnDataPipeToParent) { return NO_HANDLE_EXIST2; }
 	if (a_pipeIndex >= s_nNumberOfDataPipesToParent) { return OUT_OF_INDEX; }
@@ -90,7 +89,7 @@ DAQ_DH_EXPORT sssize_t WriteDataToParent(pindex_t a_pipeIndex, const void* a_buf
 }
 
 
-}}}} // namespace common{ namespace system { namespace exe { namespace child {
+}}}  //  namespace systemN { namespace exe { namespace child {
 
 #ifdef _WIN32
 #define HANDLE_CAST2	CPPUTILS_REINTERPRET_CAST

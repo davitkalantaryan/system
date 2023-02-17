@@ -14,10 +14,10 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#pragma warning(disable:4244)//TLeaf.h(121,72): warning C4244: 'return': conversion from 'Double_t' to 'Long64_t', possible loss of data
+//#pragma warning(disable:4244)//TLeaf.h(121,72): warning C4244: 'return': conversion from 'Double_t' to 'Long64_t', possible loss of data
 #endif
 
-#include <daq/data_handling/export_symbols.h>
+#include <system/export_symbols.h>
 #include <stddef.h>
 
 CPPUTILS_BEGIN_C
@@ -31,12 +31,12 @@ CPPUTILS_BEGIN_C
 
 #define dlclose			FreeLibrary
 #define dlsym			GetProcAddress
-#define STDOUT_FILENO	REINTERPRET_CAST2(HANDLE,STD_OUTPUT_HANDLE)
+#define STDOUT_FILENO	CPPUTILS_REINTERPRET_CAST(HANDLE,STD_OUTPUT_HANDLE)
 
 typedef DWORD ssize_t;
 typedef HMODULE LibHandleType;
 
-int sys_dprintf(HANDLE a_file, const char* a_cpcFormat, ...);
+SYSTEM_EXPORT int sys_dprintf(HANDLE a_file, const char* a_cpcFormat, ...);
 
 #else   // #ifdef _WIN32
 

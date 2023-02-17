@@ -6,16 +6,16 @@
 // This header is for ...
 //
 
-#include <system_specific_definations.h>
+#include <system/system_specific_definations.h>
 #include <stdarg.h>
 #include <stdio.h>
 
 #define BUFFER_SIZE_MIN1_FOR_SPRINTF		4093
 
-BEGIN_C_DECL2
+CPPUTILS_BEGIN_C
 
 
-int sys_dprintf(HANDLE a_file,const char* a_cpcFormat,...)
+SYSTEM_EXPORT int sys_dprintf(HANDLE a_file,const char* a_cpcFormat,...)
 {
 	int nReturn;
 	char vcBuffer[BUFFER_SIZE_MIN1_FOR_SPRINTF + 1];
@@ -29,4 +29,4 @@ int sys_dprintf(HANDLE a_file,const char* a_cpcFormat,...)
 }
 
 
-END_C_DECL2
+CPPUTILS_END_C

@@ -8,8 +8,8 @@
 
 #pragma once
 
-#ifndef COMMON_SYSTEM_RW_HPP
-#define COMMON_SYSTEM_RW_HPP
+#ifndef SYSTEM_INCLUDE_SYSTEM_RW_HPP
+#define SYSTEM_INCLUDE_SYSTEM_RW_HPP
 
 #include <system/export_symbols.h>
 #include <stddef.h>
@@ -19,7 +19,7 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <Windows.h>
-#define UNINITED_HANDLE	NEWNULLPTR2
+#define UNINITED_HANDLE	CPPUTILS_NULL
 typedef DWORD		sssize_t;
 typedef HANDLE		handle_t;
 #else
@@ -77,4 +77,4 @@ SYSTEM_EXPORT pindex_t ReadFromManyPipes(
 
 #endif  // #ifdef __cplusplus
 
-#endif  // #ifndef COMMON_SYSTEM_RW_HPP
+#endif  // #ifndef SYSTEM_INCLUDE_SYSTEM_RW_HPP
