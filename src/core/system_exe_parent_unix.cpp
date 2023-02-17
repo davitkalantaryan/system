@@ -6,7 +6,12 @@
 // Here is functions, that is used to call system routines and binaries
 //
 
+#include <system/export_symbols.h>
+
+#ifndef _WIN32
+
 #include <system/exe/parent_child_common.hpp>
+#include <private/system/exe_parent_child_common.h>
 #include "system_include_private.hpp"
 #include <string.h> // we hope that strcspn is rejecting case
 #include <stdio.h>
@@ -504,3 +509,6 @@ static void Clear(struct SHandle* a_handle)
 
 
 }}}  //  namespace systemN { namespace exe { namespace parent{
+
+
+#endif  //  #ifndef _WIN32

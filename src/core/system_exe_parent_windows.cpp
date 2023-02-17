@@ -6,6 +6,10 @@
 // Here is functions, that is used to call system routines and binaries
 //
 
+#include <system/export_symbols.h>
+
+#ifdef _WIN32
+
 #include <system/exe/parent.hpp>
 #include <stdio.h>
 #include <stdlib.h>
@@ -572,3 +576,6 @@ void SPipeStruct::DestroyPipeStruct(void)
 
 
 }}}  //  namespace namespace systemN { namespace exe { namespace parent{
+
+
+#endif  //  #ifdef _WIN32

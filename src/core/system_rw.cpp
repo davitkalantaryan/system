@@ -234,7 +234,7 @@ SYSTEM_EXPORT pindex_t ReadFromManyPipes(
     FD_ZERO( &rfds );
     FD_ZERO( &efds );
 
-    for(i=0,nNumberOfPipes=0;i<a_handlesCount;++i){
+    for(i=0;i<a_handlesCount;++i){
         pCurHandle = (*a_fpHandleGetter)(a_handlesParent, i);
         if(*pCurHandle>=0){
             //++nNumberOfPipes;
