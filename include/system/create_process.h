@@ -21,7 +21,7 @@ typedef struct SSystemProcessHandle* TSystemProcessHandlePtr;
 
 SYSTEM_EXPORT TSystemProcessHandlePtr SystemCreateProcessU(char* a_argv[]);
 SYSTEM_EXPORT TSystemProcessHandlePtr SystemCreateProcessW(const char* a_binaryName, char* a_commandLine);
-SYSTEM_EXPORT void SystemWaitndClearProcess(TSystemProcessHandlePtr a_procHandle, int* a_pProcessExitCode);
+SYSTEM_EXPORT void SystemWaitAndClearProcess(TSystemProcessHandlePtr a_procHandle, int* a_pProcessExitCode);
 
 
 

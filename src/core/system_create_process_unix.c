@@ -134,7 +134,7 @@ SYSTEM_EXPORT TSystemProcessHandlePtr SystemCreateProcessW(const char* a_binaryN
 }
 
 
-SYSTEM_EXPORT void SystemWaitndClearProcess(TSystemProcessHandlePtr a_procHandle, int* a_pProcessExitCode)
+SYSTEM_EXPORT void SystemWaitAndClearProcess(TSystemProcessHandlePtr a_procHandle, int* a_pProcessExitCode)
 {
     int status;
     const pid_t chP = (pid_t)a_procHandle->pid;
