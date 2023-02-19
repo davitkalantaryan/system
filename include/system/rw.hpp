@@ -6,20 +6,30 @@
 // This header is for functions, that is used to call system routines and binaries
 //
 
-#ifndef COMMON_SYSTEM_RW_HPP
-#define COMMON_SYSTEM_RW_HPP
+#pragma once
 
-#include <system_internal_header.h>
-#ifdef SYSTEM_EXE_START_IS_POSSIBLE
+#ifndef SYSTEM_INCLUDE_SYSTEM_RW_HPP
+#define SYSTEM_INCLUDE_SYSTEM_RW_HPP
 
+#include <system/export_symbols.h>
 #include <stddef.h>
-#include <string>
 #include <stdint.h>
+
+#ifdef _MSC_VER
+#pragma warning (push)
+#pragma warning (disable:4365)
+#endif
+#include <string>
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif
+
 #ifdef _WIN32
+#include <cinternal/disable_compiler_warnings.h>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <Windows.h>
-#define UNINITED_HANDLE	SYSTEM_NULL
+#define UNINITED_HANDLE	CPPUTILS_NULL
 typedef DWORD		sssize_t;
 typedef HANDLE		handle_t;
 #else
@@ -67,17 +77,14 @@ typedef sssize_t (*WaitFunctionType)(void*, int timeoutMs);
 
 namespace systemN {
 
-sssize_t WriteToHandle(handle_t handle,const void* buffer, size_t bufferSize);
-pindex_t ReadFromManyPipes(
+SYSTEM_EXPORT sssize_t WriteToHandle(handle_t handle,const void* buffer, size_t bufferSize);
+SYSTEM_EXPORT pindex_t ReadFromManyPipes(
 	void* handlesParent, pindex_t handlesCount, HandleGetterType fpHandleGetter, 
 	void** buffers, const size_t* buffersSizes, sssize_t* pReadSize, int timeoutMs, WaitFunctionType a_fpWait);
 
-} // namespace systemN {
+}  //  namespace systemN {
 
 
 #endif  // #ifdef __cplusplus
 
-
-#endif  // #ifdef SYSTEM_EXE_START_IS_POSSIBLE
-
-#endif  // #ifndef COMMON_SYSTEM_RW_HPP
+#endif  // #ifndef SYSTEM_INCLUDE_SYSTEM_RW_HPP

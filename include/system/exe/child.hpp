@@ -9,24 +9,20 @@
 #ifndef COMMON_SYSTEM_EXE_CHILD_HPP
 #define COMMON_SYSTEM_EXE_CHILD_HPP
 
-#include <system_internal_header.h>
-#ifdef SYSTEM_EXE_START_IS_POSSIBLE
-
+#include <system/export_symbols.h>
 #include <system/exe/parent_child_common.hpp>
 
 
 namespace systemN { namespace exe { namespace child {
 
-bool IsCommunicationWithParentInited(void);
+SYSTEM_EXPORT bool IsCommunicationWithParentInited(void);
+SYSTEM_EXPORT pindex_t ReadDataFromAllParentPipes(void** buffers, const size_t* buffersSizes, sssize_t* pReadSize, int timeoutMs);
+SYSTEM_EXPORT sssize_t ReadDataFromParent(pindex_t index, void* buff, size_t count, int timeoutMs);
+SYSTEM_EXPORT sssize_t WriteDataToParent(pindex_t index, const void* buff, size_t count);
 
-pindex_t ReadDataFromAllParentPipes(void** buffers, const size_t* buffersSizes, sssize_t* pReadSize, int timeoutMs);
-sssize_t ReadDataFromParent(pindex_t index, void* buff, size_t count, int timeoutMs);
-sssize_t WriteDataToParent(pindex_t index, const void* buff, size_t count);
 
+}}}  //  namespace systemN { namespace exe { namespace child {
 
-}}} // namespace systemN { namespace exe { namespace child {
-
-#endif  // #ifdef SYSTEM_EXE_START_IS_POSSIBLE
 
 
 #endif  // #ifndef COMMON_SYSTEM_EXE_CHILD_HPP

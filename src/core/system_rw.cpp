@@ -6,9 +6,6 @@
 // Here is functions, that is used to call system routines and binaries
 //
 
-#include <system_internal_header.h>
-#ifdef SYSTEM_EXE_START_IS_POSSIBLE
-
 #include <system/rw.hpp>
 #include <vector>
 #include <utility>
@@ -16,7 +13,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-namespace systemN {
+namespace systemN { 
 
 #ifdef _WIN32
 
@@ -47,7 +44,7 @@ static thread_local int  stl_isAsyncIoDone = 0;
 sssize_t WriteToHandle(handle_t a_pipeHandle, const void* a_buffer, size_t a_bufferSize)
 {
 	DWORD dwSize;
-    BOOL bRet(WriteFile(a_pipeHandle, a_buffer, static_cast<DWORD>(a_bufferSize), &dwSize, SYSTEM_NULL));
+	BOOL bRet(WriteFile(a_pipeHandle, a_buffer, static_cast<DWORD>(a_bufferSize), &dwSize, CPPUTILS_NULL));
 	return bRet ? dwSize : -1;
 }
 
@@ -58,6 +55,51 @@ pindex_t ReadFromManyPipes(
 {
 #if 0
 
+	pindex_t ssnReturn(COMMON_SYSTEM_UNKNOWN);
+	pindex_t i;
+	handle_t* pCurHandle;
+	int nNumberOfValidPipes(0);
+	pindex_t dwWaitIndex;
+	HANDLE* pHandles = static_cast<HANDLE*>(calloc(a_handlesCount, sizeof(HANDLE)));
+
+	if (!pHandles) {
+		return COMMON_SYSTEM_RW_NO_MEM; // no need to jump to return for cleanup
+	}
+
+	for (i = 0; i < a_handlesCount; ++i) {
+		if (a_buffersSizes[i]) {
+			pCurHandle = (*a_fpHandleGetter)(a_handlesParent, i);
+			if (*pCurHandle) {
+				pHandles[nNumberOfValidPipes++] = *pCurHandle;
+			}
+		}
+
+	}
+
+	if (!nNumberOfValidPipes) {
+		ssnReturn = NO_HANDLE_EXIST2;
+		goto returnPoint;
+	}
+
+	dwWaitIndex = static_cast<pindex_t>(WaitForMultipleObjects(nNumberOfValidPipes,pHandles,TRUE,a_timeoutMs));
+	dwWaitIndex -= WAIT_OBJECT_0;
+
+	if((dwWaitIndex<0)||(dwWaitIndex>=a_handlesCount)){
+		ssnReturn = OUT_OF_INDEX;
+		goto returnPoint;
+	}
+
+
+	if(!ReadFile(pHandles[dwWaitIndex],a_buffers[dwWaitIndex],static_cast<DWORD>(a_buffersSizes[dwWaitIndex]),a_pReadSize,CPPUTILS_NULL)){
+		ssnReturn = UNABLE_TO_READ;
+		goto returnPoint;
+	}
+	
+	ssnReturn = dwWaitIndex;
+returnPoint:
+	free(pHandles);
+	return ssnReturn;
+
 #else
 	pindex_t ssnReturn(COMMON_SYSTEM_UNKNOWN);
 	pindex_t i;
@@ -65,15 +107,15 @@ pindex_t ReadFromManyPipes(
 	handle_t* pCurHandle;
 	BOOL bRetByReadEx;
 	DWORD nNumberOfValidPipes(0);
-	SPipeHelperData aHelper{0,-1,0};
-	SOverlapped* pOverlapped = static_cast<SOverlapped*>( calloc(a_handlesCount,sizeof(struct SOverlapped)) );
+	SPipeHelperData aHelper{0,-1};
+	SOverlapped* pOverlapped = static_cast<SOverlapped*>( calloc((size_t)a_handlesCount,sizeof(struct SOverlapped)) );
 
 	if(!pOverlapped){
 		return COMMON_SYSTEM_RW_NO_MEM; // no need to jump to return for cleanup
 	}
 
 	if(!a_fpWait){
-		a_fpWait = [](void*, int a_timeoutMs) {return SleepEx(a_timeoutMs,TRUE);};
+		a_fpWait = [](void*, int a_timeoutMs) {return SleepEx((DWORD)a_timeoutMs,TRUE);};
 	}
 
 	for(i=0;i< a_handlesCount;++i){
@@ -89,7 +131,7 @@ pindex_t ReadFromManyPipes(
 					&pOverlapped[i].ovrlp,
 					&OVERLAPPED_READ_COMPLETION_ROUTINE_GEN_STAT);
 				if(bRetByReadEx){++nNumberOfValidPipes;}
-                else{CloseHandle(*pCurHandle);*pCurHandle=SYSTEM_NULL;}
+				else{CloseHandle(*pCurHandle);*pCurHandle=CPPUTILS_NULL;}
 			}
 		}
 	
@@ -101,8 +143,8 @@ pindex_t ReadFromManyPipes(
 	}
 
 	while((!aHelper.errorCode)&&(!aHelper.sizeReaded)){
-		if ( (nWaitReturn=(*a_fpWait)(a_handlesParent,a_timeoutMs)) != WAIT_IO_COMPLETION) {
-			ssnReturn = (nWaitReturn== WAIT_TIMEOUT)?COMMON_SYSTEM_TIMEOUT:(COMMON_SYSTEM_RW_INTERRUPTED-nWaitReturn);
+		if ( (nWaitReturn=(int)(*a_fpWait)(a_handlesParent,a_timeoutMs)) != WAIT_IO_COMPLETION) {
+			ssnReturn = (nWaitReturn== WAIT_TIMEOUT)?((pindex_t)COMMON_SYSTEM_TIMEOUT):((pindex_t)(COMMON_SYSTEM_RW_INTERRUPTED-nWaitReturn));
 			goto returnPoint;
 		}
 
@@ -119,13 +161,14 @@ pindex_t ReadFromManyPipes(
 	}
 
 	if (aHelper.errorCode) {
-		pCurHandle = (*a_fpHandleGetter)(a_handlesParent, static_cast<pindex_t>(aHelper.indexOfReader));
-        CloseHandle(*pCurHandle); *pCurHandle = SYSTEM_NULL;
+		pCurHandle = (*a_fpHandleGetter)(a_handlesParent, (pindex_t)aHelper.indexOfReader);
+		CloseHandle(*pCurHandle); *pCurHandle = CPPUTILS_NULL;
 		ssnReturn = COMMON_SYSTEM_PIPE_CLOSED;
 		goto returnPoint;
 	}
-	
-	ssnReturn= static_cast<pindex_t>(aHelper.indexOfReader);
+
+	*a_pReadSize = static_cast<sssize_t>(aHelper.sizeReaded);
+	ssnReturn= (pindex_t)aHelper.indexOfReader;
 returnPoint:
 
 	for(i=0;i< a_handlesCount;++i){
@@ -139,7 +182,6 @@ returnPoint:
 		}
 	
 	}
-	*a_pReadSize = static_cast<sssize_t>(aHelper.sizeReaded);
 	//SleepEx(1, TRUE); // wait for io comletion
 	free(pOverlapped);
 	return ssnReturn;
@@ -153,28 +195,28 @@ static VOID WINAPI OVERLAPPED_READ_COMPLETION_ROUTINE_GEN_STAT(
 	_In_    DWORD a_dwNumberOfBytesTransfered,
 	_Inout_ LPOVERLAPPED a_lpOverlapped)
 {
-	struct SOverlapped* pPipeStr = lblcontainer_of(a_lpOverlapped, struct SOverlapped, ovrlp);
 	stl_isAsyncIoDone = 1;
-	pPipeStr->pHelper->errorCode = a_dwErrorCode;
 	if((a_dwErrorCode!=ERROR_OPERATION_ABORTED)&&(a_dwErrorCode!=ERROR_MR_MID_NOT_FOUND)&&(a_dwErrorCode!=ERROR_SCOPE_NOT_FOUND) ){
+		struct SOverlapped* pPipeStr = lblcontainer_of(a_lpOverlapped, struct SOverlapped, ovrlp);
 		pPipeStr->pHelper->indexOfReader = int32_t(pPipeStr->index);
-		if (a_dwErrorCode) {pPipeStr->pHelper->sizeReaded = -1;}
-		else{pPipeStr->pHelper->sizeReaded = a_dwNumberOfBytesTransfered;}
+		pPipeStr->pHelper->errorCode = (int32_t)a_dwErrorCode;
+		if (!a_dwErrorCode) {
+			pPipeStr->pHelper->sizeReaded = a_dwNumberOfBytesTransfered;
+		}
 	}
-	else {pPipeStr->pHelper->sizeReaded = -1;}
 }
 
 
 #else    // #ifdef _WIN32
 
 
-sssize_t WriteToHandle(handle_t a_pipeHandle, const void* a_buffer, size_t a_bufferSize)
+SYSTEM_EXPORT sssize_t WriteToHandle(handle_t a_pipeHandle, const void* a_buffer, size_t a_bufferSize)
 {
         return write(a_pipeHandle, a_buffer, a_bufferSize);
 }
 
 
-pindex_t ReadFromManyPipes(
+SYSTEM_EXPORT pindex_t ReadFromManyPipes(
     void* a_handlesParent, pindex_t a_handlesCount, HandleGetterType a_fpHandleGetter,
     void** a_buffers, const size_t* a_buffersSizes, sssize_t* a_pReadSize, int a_timeoutMs, WaitFunctionType)
 {
@@ -192,7 +234,7 @@ pindex_t ReadFromManyPipes(
     FD_ZERO( &rfds );
     FD_ZERO( &efds );
 
-    for(i=0/*,nNumberOfPipes=0*/;i<a_handlesCount;++i){
+    for(i=0;i<a_handlesCount;++i){
         pCurHandle = (*a_fpHandleGetter)(a_handlesParent, i);
         if(*pCurHandle>=0){
             //++nNumberOfPipes;
@@ -218,10 +260,10 @@ pindex_t ReadFromManyPipes(
         pTimeout = &aTimeout2;
     }
     else{
-        pTimeout = SYSTEM_NULL;
+        pTimeout = CPPUTILS_NULL;
     }
 
-    nTry = select(++maxsd, &rfds, SYSTEM_NULL, &efds, pTimeout );
+    nTry = select(++maxsd, &rfds, CPPUTILS_NULL, &efds, pTimeout );
 
     switch(nTry)
     {
@@ -264,9 +306,9 @@ pindex_t ReadFromManyPipes(
 
 
 
-} // namespace systemN {
+}  //  namespace systemN { 
 
-#ifndef SYSTEM_CPP_11_DEFINED
+#ifndef CPPUTILS_CPP_11_DEFINED
 namespace std{
 
 ::std::string to_string(int a_nValue)
@@ -278,6 +320,3 @@ namespace std{
 
 }
 #endif
-
-
-#endif  // #ifdef DEVSHEET_EXE_START_IS_POSSIBLE

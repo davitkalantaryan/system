@@ -8,7 +8,15 @@
 
 #include <system/exe/parent.hpp>
 #include <stdint.h>
+
+#ifdef _MSC_VER
+#pragma warning (push)
+#pragma warning (disable:4365)
+#endif
 #include <string>
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif
 
 //#define MAKE_SOME_TESTS
 
@@ -76,6 +84,6 @@ struct SHandle {
 
 #endif  // #ifdef _WIN32
 
-}}}  // namespace systemN { namespace exe { namespace parent{
+}}}  //  namespace systemN { namespace exe { namespace parent{
 
 #endif  // #ifndef COMMON_SYSTEM_INCLUDE_PRIVATE_HPP

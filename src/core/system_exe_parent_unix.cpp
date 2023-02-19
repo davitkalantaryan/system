@@ -6,21 +6,21 @@
 // Here is functions, that is used to call system routines and binaries
 //
 
-#include <system_internal_header.h>
-#ifdef SYSTEM_EXE_START_IS_POSSIBLE
+#include <system/export_symbols.h>
 
 #ifndef _WIN32
 
+#include <system/exe/parent_child_common.hpp>
+#include <private/system/exe_parent_child_common.h>
+#include "system_include_private.hpp"
 #include <string.h> // we hope that strcspn is rejecting case
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "system_include_private.hpp"
 #include <sys/wait.h>
 #include <signal.h>
 #include <alloca.h>
 #include <string>
-#include <src/system_exe_parent_child_common.h>
 
 #ifndef SleepEx
 #define SleepEx(_x,_alrt)   usleep(1000*(_x))
@@ -46,7 +46,7 @@ static const char* s_sccpAcceptReject = " \t\n\r";
 static void Clear(struct SHandle* a_handle);
 
 
-THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWriteToChildDataPipes,char* a_commandLine,const char* a_cpcAdditionalSearchPath, uint8_t a_bUsingStdPipes)
+SYSTEM_EXPORT THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWriteToChildDataPipes,char* a_commandLine,const char* a_cpcAdditionalSearchPath, uint8_t a_bUsingStdPipes)
 {
     THandle hReturn;
     size_t unStrStrResult;
@@ -54,7 +54,7 @@ THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
     char* pcParsePointer = a_commandLine;
     char **ppcArgsTmp, **ppcArgs = static_cast<char**>(malloc(ALLOCATION_COUNT_STEP*sizeof(char*)));
 
-    if(!ppcArgs){return SYSTEM_NULL;}
+    if(!ppcArgs){return CPPUTILS_NULL;}
     unAllocatedCount = ALLOCATION_COUNT_STEP;
 
     for(argc=0;*pcParsePointer;){
@@ -65,7 +65,7 @@ THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
             ppcArgsTmp = static_cast<char**>(realloc(ppcArgs,unAllocatedCountTmp*sizeof(char*)));
             if(!ppcArgsTmp){
                 free(ppcArgs);
-                return SYSTEM_NULL;
+                return CPPUTILS_NULL;
             }
             ppcArgs=ppcArgsTmp;
         }
@@ -83,7 +83,7 @@ THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
 }
 
 
-THandle RunNoWaitU(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWriteToChildDataPipes, char* a_argv[], const char* a_cpcAdditionalSearchPath, uint8_t a_bUsingStdPipes)
+SYSTEM_EXPORT THandle RunNoWaitU(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWriteToChildDataPipes, char* a_argv[], const char* a_cpcAdditionalSearchPath, uint8_t a_bUsingStdPipes)
 {
     int8_t pipeIndex;
     int8_t numberOfReadFromChildPipes;
@@ -93,7 +93,7 @@ THandle RunNoWaitU(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
     const char* cpcArg0initial = a_argv[0];
     THandle pHandle = static_cast<THandle>(calloc(1,sizeof(struct SHandle)));
 
-    if(!pHandle){return SYSTEM_NULL;}
+    if(!pHandle){return CPPUTILS_NULL;}
 
     // SHandle() { this->pid = -1; this->waited = 0; this->shouldWait = this->cleared = 1; }
     pHandle->pid = -1;pHandle->reserved64bit = 1;pHandle->shouldWait2 = 0;
@@ -103,16 +103,16 @@ THandle RunNoWaitU(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
         pHandle->pDataToChildPipes = static_cast<struct SPipeStruct*>(calloc(static_cast<size_t>(a_numberOfWriteToChildDataPipes),sizeof(struct SPipeStruct)));
         if (!pHandle->pDataToChildPipes) {
             Clear(pHandle);
-            return SYSTEM_NULL;
+            return CPPUTILS_NULL;
         }
         pHandle->numberOfWriteToChildDataPipes = static_cast<uint64_t>(a_numberOfWriteToChildDataPipes);
     }
 
     numberOfReadFromChildPipes = DATA_0_FROM_CHILD_EXE_PIPE + ((a_numberOfReadFromChildDataPipes >0)?a_numberOfReadFromChildDataPipes:0);
-    pHandle->pReadPipes = static_cast<struct SPipeStruct*>(calloc(SYSTEM_STATIC_CAST(size_t,numberOfReadFromChildPipes),sizeof(struct SPipeStruct)));
+    pHandle->pReadPipes = static_cast<struct SPipeStruct*>(calloc(CPPUTILS_STATIC_CAST(size_t,numberOfReadFromChildPipes),sizeof(struct SPipeStruct)));
     if (!pHandle->pReadPipes) {
         Clear(pHandle);
-        return SYSTEM_NULL;
+        return CPPUTILS_NULL;
     }
     pHandle->numberOfReadFromChildPipes = static_cast<uint64_t>(numberOfReadFromChildPipes);
 
@@ -198,7 +198,7 @@ THandle RunNoWaitU(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
             pHandle->pDataToChildPipes[pipeIndex].pipes[0]=-1;
         }
 
-        Clear(pHandle);pHandle=SYSTEM_NULL;
+        Clear(pHandle);pHandle=CPPUTILS_NULL;
 
 #endif
         //execvpe(a_argv[0],a_argv,a_envp); // ???????????????????????????????????
@@ -215,7 +215,7 @@ THandle RunNoWaitU(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
                     strNewPath = ::std::string(pcAdditionalSearchPath) + "/" + cpcArg0initial;
                     a_argv[0] = const_cast<char*>(strNewPath.c_str());
                     execvp(a_argv[0],a_argv);
-                    pcAdditionalSearchPath = pcAdditionalSearchPathTmp?(pcAdditionalSearchPathTmp+1):SYSTEM_NULL;
+                    pcAdditionalSearchPath = pcAdditionalSearchPathTmp?(pcAdditionalSearchPathTmp+1):CPPUTILS_NULL;
                 }
                 free(pcAdditionalSearchPathInitial);
             }  // if(pcAdditionalSearchPathInitial){
@@ -293,10 +293,10 @@ returnPoint:
 errorReturnPoint:
 
     Clear(pHandle);
-    pHandle = SYSTEM_NULL;
+    pHandle = CPPUTILS_NULL;
     goto returnPoint;
 
-    return SYSTEM_NULL;
+    return CPPUTILS_NULL;
 }
 
 
@@ -308,29 +308,23 @@ pindex_t ReadFromAllPipes(THandle a_handle,void** a_buffers,const size_t* a_buff
         //[](void* a_handleInner, pindex_t a_pipeIndex) {return &(static_cast<THandle>(a_handleInner)->pReadPipes[a_pipeIndex].pr);},
         &HandleGetterFunction1,
         a_buffers,a_buffersSizes,a_pReadSize,a_timeoutMs,
-        SYSTEM_NULL);
+        CPPUTILS_NULL);
 }
 
 
 static inline handle_t* HandleGetterFunction2(void* a_handleInner, pindex_t){return static_cast<handle_t*>(a_handleInner);}
-sssize_t ReadFromDataPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
-{
-	return ReadFromAnyPipe(a_handle,a_pipeIndex+DATA_0_FROM_CHILD_EXE_PIPE,a_buffer,a_bufferSize,a_timeoutMs);
-}
-
-
-sssize_t ReadFromAnyPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
+sssize_t ReadDataFromPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
 {
     void* vBuffers[] = {a_buffer};
     size_t vBuffersSizes[] = {a_bufferSize};
     sssize_t readReturn(-1);
 
     ReadFromManyPipes(
-        &(a_handle->pReadPipes[a_pipeIndex].pipes[0]),1,
+        &(a_handle->pReadPipes[DATA_0_FROM_CHILD_EXE_PIPE+a_pipeIndex].pipes[0]),1,
         //[](void* a_handleInner, pindex_t a_pipeIndex) {return &(static_cast<THandle>(a_handleInner)->pReadPipes[a_pipeIndex].pr);},
         &HandleGetterFunction2,
         vBuffers,vBuffersSizes,&readReturn,a_timeoutMs,
-        SYSTEM_NULL);
+        CPPUTILS_NULL);
 
     return readReturn;
 }
@@ -351,11 +345,50 @@ sssize_t WriteToDataPipe(THandle a_handle, pindex_t a_pipeIndex, const void* a_b
 }
 
 
-bool Clear(THandle a_handle,int* a_exeReturnCodePtr)
+bool WaitAndClear(THandle a_handle,int a_timeoutMs, int* a_exeReturnCodePtr)
 {
     int nWaited = 0;
     pid_t w;
     int status;
+    fd_set rfds, efds;
+    int nTry,maxsd(a_handle->pReadPipes[CONTROL_RD_EXE_PIPE].pipes[0]+1);
+    struct timeval		aTimeout;
+    struct timeval*		pTimeout;
+
+    FD_ZERO( &rfds );
+    FD_ZERO( &efds );
+
+    FD_SET( a_handle->pReadPipes[CONTROL_RD_EXE_PIPE].pipes[0], &rfds );
+    FD_SET( a_handle->pReadPipes[CONTROL_RD_EXE_PIPE].pipes[0], &efds );
+
+    if( a_timeoutMs >= 0 ){
+        aTimeout.tv_sec = a_timeoutMs / 1000;
+        aTimeout.tv_usec = (a_timeoutMs%1000)*1000 ;
+        pTimeout = &aTimeout;
+    }
+    else{pTimeout = CPPUTILS_NULL;}
+
+    nTry = select(++maxsd, &rfds, CPPUTILS_NULL, &efds, pTimeout );
+
+    switch(nTry)
+    {
+    case 0:	/* time out */
+        return false;
+    case -1:
+        if( errno == EINTR ){
+            /* interrupted by signal */
+            // todo: kill child and return true;
+            return false;
+            //return COMMON_SYSTEM_RW_INTERRUPTED;
+        }
+
+        //return COMMON_SYSTEM_UNKNOWN;
+        // todo: kill child and return true;
+        return false;
+    default:
+        // we can read
+        break;
+    }
 
     a_handle->shouldWait2=1;
 
@@ -400,52 +433,6 @@ bool Clear(THandle a_handle,int* a_exeReturnCodePtr)
     }
 
     return false;
-}
-
-
-bool WaitAndClear(THandle a_handle,int a_timeoutMs, int* a_exeReturnCodePtr)
-{
-    fd_set rfds, efds;
-    int nTry,maxsd(a_handle->pReadPipes[CONTROL_RD_EXE_PIPE].pipes[0]+1);
-    struct timeval		aTimeout;
-    struct timeval*		pTimeout;
-
-    FD_ZERO( &rfds );
-    FD_ZERO( &efds );
-
-    FD_SET( a_handle->pReadPipes[CONTROL_RD_EXE_PIPE].pipes[0], &rfds );
-    FD_SET( a_handle->pReadPipes[CONTROL_RD_EXE_PIPE].pipes[0], &efds );
-
-    if( a_timeoutMs >= 0 ){
-        aTimeout.tv_sec = a_timeoutMs / 1000;
-        aTimeout.tv_usec = (a_timeoutMs%1000)*1000 ;
-        pTimeout = &aTimeout;
-    }
-    else{pTimeout = SYSTEM_NULL;}
-
-    nTry = select(++maxsd, &rfds, SYSTEM_NULL, &efds, pTimeout );
-
-    switch(nTry)
-    {
-    case 0:	/* time out */
-        return false;
-    case -1:
-        if( errno == EINTR ){
-            /* interrupted by signal */
-            // todo: kill child and return true;
-            return false;
-            //return COMMON_SYSTEM_RW_INTERRUPTED;
-        }
-
-        //return COMMON_SYSTEM_UNKNOWN;
-        // todo: kill child and return true;
-        return false;
-    default:
-        // we can read
-        break;
-    }
-
-    return Clear(a_handle,a_exeReturnCodePtr);
 }
 
 
@@ -521,8 +508,7 @@ static void Clear(struct SHandle* a_handle)
 
 
 
-}}} // namespace systemN { namespace exe { namespace parent{
+}}}  //  namespace systemN { namespace exe { namespace parent{
 
-#endif  // #ifndef _WIN32
 
-#endif  // #ifdef SYSTEM_EXE_START_IS_POSSIBLE
+#endif  //  #ifndef _WIN32

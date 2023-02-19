@@ -6,9 +6,7 @@
 // Here is functions, that is used to call system routines and binaries
 //
 
-
-#include <system_internal_header.h>
-#ifdef SYSTEM_EXE_START_IS_POSSIBLE
+#include <system/export_symbols.h>
 
 #ifdef _WIN32
 
@@ -17,10 +15,19 @@
 #include <stdlib.h>
 #include <errno.h>
 #include "system_include_private.hpp"
-#include <string>
-#include <src/system_exe_parent_child_common.h>
-#include <mutex>
+#include <private/system/exe_parent_child_common.h>
+
+
+#ifdef _MSC_VER
+#pragma warning (push)
+#pragma warning (disable:4365)
+#endif
 #include <iostream>
+#include <mutex>
+#include <string>
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif
 
 #define PIPES_SIZE		4096
 
@@ -37,7 +44,7 @@ THandle RunNoWaitU(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
 {
 	::std::string strCommandLine;
 
-	if(!a_argv[0]){return SYSTEM_NULL;}
+	if(!a_argv[0]){return CPPUTILS_NULL;}
 	strCommandLine = a_argv[0];
 	for(int argc(1);a_argv[argc];++argc){
 		strCommandLine += " ";
@@ -52,7 +59,7 @@ THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
 {
 	static ::std::mutex   smutexFornvironment;
 	::std::string dataPipeStr;
-	DWORD dwErrCode;
+	BOOL blErrCode;
 	STARTUPINFOA aStartInfo;
 	int8_t i;
 	char vcPathCurrent[4096];
@@ -63,70 +70,70 @@ THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
 	//HANDLE hStdin(GetStdHandle(STD_INPUT_HANDLE)), hStdout(GetStdHandle(STD_OUTPUT_HANDLE)), hStderr(GetStdHandle(STD_ERROR_HANDLE));
 	THandle pHandle = static_cast<THandle>(calloc(1,sizeof(struct SHandle)));
 
-	if(!pHandle){return SYSTEM_NULL;}
+	if(!pHandle){return CPPUTILS_NULL;}
 
 	pHandle->shouldRun = 1;
 
     if(a_numberOfWriteToChildDataPipes>0){
-		pHandle->pDataToChildPipes = static_cast<struct SPipeStruct*>(calloc(a_numberOfWriteToChildDataPipes, sizeof(struct SPipeStruct)));
+		pHandle->pDataToChildPipes = static_cast<struct SPipeStruct*>(calloc((size_t)a_numberOfWriteToChildDataPipes, sizeof(struct SPipeStruct)));
 		if (!pHandle->pDataToChildPipes) {
 			Clear(pHandle);
-			return SYSTEM_NULL;
+			return CPPUTILS_NULL;
 		}
-		pHandle->numberOfWriteToChildDataPipes = a_numberOfWriteToChildDataPipes;
+		pHandle->numberOfWriteToChildDataPipes = (uint64_t)a_numberOfWriteToChildDataPipes;
 	}
 
-	pHandle->numberOfReadFromChildPipes = DATA_0_FROM_CHILD_EXE_PIPE + ((a_numberOfReadFromChildDataPipes >0)?a_numberOfReadFromChildDataPipes:0);
+	pHandle->numberOfReadFromChildPipes = (uint64_t)(DATA_0_FROM_CHILD_EXE_PIPE + ((a_numberOfReadFromChildDataPipes >0)?a_numberOfReadFromChildDataPipes:0));
 	pHandle->pReadPipes = static_cast<struct SPipeStruct*>(calloc(pHandle->numberOfReadFromChildPipes,sizeof(struct SPipeStruct)));
 	if (!pHandle->pReadPipes) {
 		Clear(pHandle);
-		return SYSTEM_NULL;
+		return CPPUTILS_NULL;
 	}
 
 	// standard pipes
 	if (pHandle->stdinToWriite.InitPipeStruct()) {
 		Clear(pHandle);
-		return SYSTEM_NULL;
+		return CPPUTILS_NULL;
 	}
 	if (pHandle->pReadPipes[STDOUT_EXE_PIPE].InitPipeStruct()) {
 		Clear(pHandle);
-		return SYSTEM_NULL;
+		return CPPUTILS_NULL;
 	}
 	if (a_bUsingStdPipes&USE_STANDARD_STDOUT) {
 		pHandle->stdoutToRead = pHandle->pReadPipes[STDOUT_EXE_PIPE].pr;
-		pHandle->pReadPipes[STDOUT_EXE_PIPE].pr = SYSTEM_NULL;
+		pHandle->pReadPipes[STDOUT_EXE_PIPE].pr = CPPUTILS_NULL;
 	}
 	if (pHandle->pReadPipes[STDERR_EXE_PIPE].InitPipeStruct()) {
 		Clear(pHandle);
-		return SYSTEM_NULL;
+		return CPPUTILS_NULL;
 	}
 	if (a_bUsingStdPipes&USE_STANDARD_STDERR) {
 		pHandle->stderrToRead = pHandle->pReadPipes[STDERR_EXE_PIPE].pr;
-		pHandle->pReadPipes[STDERR_EXE_PIPE].pr = SYSTEM_NULL;
+		pHandle->pReadPipes[STDERR_EXE_PIPE].pr = CPPUTILS_NULL;
 	}
 
 	// read pipes
 	if (pHandle->pReadPipes[CONTROL_RD_EXE_PIPE].InitPipeStruct()) {
-		return SYSTEM_NULL;
+		return CPPUTILS_NULL;
 	}
 
 	for(i=0;i<a_numberOfReadFromChildDataPipes;++i){
 		if (pHandle->pReadPipes[DATA_0_FROM_CHILD_EXE_PIPE+uint16_t(i)].InitPipeStruct()) {
 			Clear(pHandle);
-			return SYSTEM_NULL;
+			return CPPUTILS_NULL;
 		}
 	}
 
 	// write pipes
 	if (pHandle->remoteControlPipeWrite.InitPipeStruct()) {
 		Clear(pHandle);
-		return SYSTEM_NULL;
+		return CPPUTILS_NULL;
 	}
 
 	for(i=0;i< a_numberOfWriteToChildDataPipes;++i){
 		if (pHandle->pDataToChildPipes[i].InitPipeStruct()) {
 			Clear(pHandle);
-			return SYSTEM_NULL;
+			return CPPUTILS_NULL;
 		}
 	}
 
@@ -146,17 +153,17 @@ THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
 
 	pHandle->stdPipesUsed = a_bUsingStdPipes;
 	if((a_bUsingStdPipes&USE_STANDARD_STDOUT)||(a_bUsingStdPipes&USE_STANDARD_STDERR)){
-		pHandle->stdOutputsRedirectorThread = CreateThread(SYSTEM_NULL,0,&StdOutputsRedirectorThread,pHandle,0,SYSTEM_NULL);
+		pHandle->stdOutputsRedirectorThread = CreateThread(CPPUTILS_NULL,0,&StdOutputsRedirectorThread,pHandle,0,CPPUTILS_NULL);
 		if(!pHandle->stdOutputsRedirectorThread){
 			Clear(pHandle);
-			return SYSTEM_NULL;
+			return CPPUTILS_NULL;
 		}
 	}
 	if(a_bUsingStdPipes&USE_STANDARD_STDIN){
-		pHandle->stdInputRedirectorThread = CreateThread(SYSTEM_NULL,0,&StdInputRedirectorThread,pHandle,0,SYSTEM_NULL);
+		pHandle->stdInputRedirectorThread = CreateThread(CPPUTILS_NULL,0,&StdInputRedirectorThread,pHandle,0,CPPUTILS_NULL);
 		if(!pHandle->stdInputRedirectorThread){
 			Clear(pHandle);
-			return SYSTEM_NULL;
+			return CPPUTILS_NULL;
 		}
 	}
 
@@ -186,15 +193,15 @@ THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
 		SetEnvironmentVariableA(dataPipeStr.c_str(), ::std::to_string((size_t)pHandle->pDataToChildPipes[i].pr).c_str());
 	}
 
-	dwErrCode = CreateProcessA(
-		SYSTEM_NULL,											// Application name (NULL means take from command line)
+	blErrCode = CreateProcessA(
+		CPPUTILS_NULL,											// Application name (NULL means take from command line)
 		const_cast<char*>(a_argumentsLine),						// Command line to execute
-		SYSTEM_NULL,											// Process security attributes
-		SYSTEM_NULL,											// Thread security attributes
+		CPPUTILS_NULL,											// Process security attributes
+		CPPUTILS_NULL,											// Thread security attributes
 		TRUE,													// Inherit handles
 		NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,
-		SYSTEM_NULL,
-		SYSTEM_NULL,
+		CPPUTILS_NULL,
+		CPPUTILS_NULL,
 		&aStartInfo,
 		&(pHandle->prcInfo)
 	);
@@ -203,17 +210,17 @@ THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
 	}
 	smutexFornvironment.unlock();
 
-	if(!dwErrCode){
+	if(!blErrCode){
 		Clear(pHandle);
-		return SYSTEM_NULL;
+		return CPPUTILS_NULL;
 	}
 
 	pHandle->fpWaiterFunction = [](void* a_pHandleInner1,int a_timeoutMsInner1){
 		THandle pHandleInner1= static_cast<THandle>(a_pHandleInner1);
-		sssize_t nReturnInner1=WaitForSingleObjectEx(pHandleInner1->prcInfo.hProcess,a_timeoutMsInner1,TRUE);
+		sssize_t nReturnInner1=(sssize_t)WaitForSingleObjectEx(pHandleInner1->prcInfo.hProcess,(DWORD)a_timeoutMsInner1,TRUE);
 		if(nReturnInner1==WAIT_OBJECT_0){
 			AfterProcessTermination(pHandleInner1);
-			pHandleInner1->fpWaiterFunction = [](void*,int a_timeoutMsInner2){ return SleepEx(a_timeoutMsInner2,TRUE);};
+			pHandleInner1->fpWaiterFunction = [](void*,int a_timeoutMsInner2){ return SleepEx((DWORD)a_timeoutMsInner2,TRUE);};
 			if(SleepEx(2,TRUE)==WAIT_IO_COMPLETION){
 				nReturnInner1 = WAIT_IO_COMPLETION;
 			}
@@ -225,35 +232,13 @@ THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
 }
 
 
-bool Clear(THandle a_handle, int* a_exeReturnCodePtr)
-{
-	DWORD dwWaitReturn;
-	bool bReturn(true);
-
-	if(a_handle->prcInfo.hProcess){
-		dwWaitReturn = WaitForSingleObject(a_handle->prcInfo.hProcess, INFINITE);
-		if (dwWaitReturn != WAIT_OBJECT_0) {
-			AfterProcessTermination(a_handle);
-			bReturn = false;
-		}
-	}
-
-	if (bReturn) {
-		if(a_exeReturnCodePtr){*a_exeReturnCodePtr = static_cast<int>(a_handle->exeReturnCode);}
-		Clear(a_handle);
-	}
-
-	return bReturn;
-}
-
-
 bool WaitAndClear(THandle a_handle, int a_timeoutMs, int* a_exeReturnCodePtr)
 {
 	DWORD dwWaitReturn;
 	bool bReturn(true);
 
 	if(a_handle->prcInfo.hProcess){
-		dwWaitReturn = WaitForSingleObject(a_handle->prcInfo.hProcess, a_timeoutMs);
+		dwWaitReturn = WaitForSingleObject(a_handle->prcInfo.hProcess, (DWORD)a_timeoutMs);
 		if (dwWaitReturn != WAIT_OBJECT_0) {
 			AfterProcessTermination(a_handle);
 			bReturn = false;
@@ -292,23 +277,18 @@ sssize_t WriteToStdIn(THandle a_handle, const void* a_buffer, size_t a_bufferSiz
 //	return static_cast<int>(dwWaitReturn);
 //}
 
-sssize_t ReadFromDataPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
-{
-	return ReadFromAnyPipe(a_handle,a_pipeIndex+DATA_0_FROM_CHILD_EXE_PIPE,a_buffer,a_bufferSize,a_timeoutMs);
-}
-
-
-sssize_t ReadFromAnyPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
+sssize_t ReadDataFromPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer, size_t a_bufferSize, int a_timeoutMs)
 {
 	struct SPipeIndexStructPrivate {
 		THandle hndl;
 		HANDLE* pPipe;
-	}aPipeIndStr{ a_handle ,SYSTEM_NULL};
-	//SPipeIndexStructPrivate aPipeIndStr{ a_handle ,SYSTEM_NULL };
+	}aPipeIndStr{ a_handle ,CPPUTILS_NULL};
+	//SPipeIndexStructPrivate aPipeIndStr{ a_handle ,CPPUTILS_NULL };
 	sssize_t readReturn;
 	void* vBuffers[1] = { a_buffer };
 	const size_t vBufferSizes[1] = { a_bufferSize };
-	if (a_pipeIndex >= a_handle->numberOfReadFromChildPipes) { return OUT_OF_INDEX; }
+	a_pipeIndex += DATA_0_FROM_CHILD_EXE_PIPE;
+	if (a_pipeIndex >= ((pindex_t)a_handle->numberOfReadFromChildPipes)) { return (sssize_t)OUT_OF_INDEX; }
 	aPipeIndStr.pPipe = &(a_handle->pReadPipes[a_pipeIndex].pr);
 	ReadFromManyPipes(
 		&aPipeIndStr,1,
@@ -323,24 +303,24 @@ sssize_t ReadFromAnyPipe(THandle a_handle, pindex_t a_pipeIndex, void* a_buffer,
 
 sssize_t WriteToDataPipe(THandle a_handle, pindex_t a_pipeIndex, const void* a_buffer, size_t a_bufferSize)
 {
-	if(a_pipeIndex>=a_handle->numberOfWriteToChildDataPipes){return OUT_OF_INDEX;}
-	if(!a_handle->pDataToChildPipes[a_pipeIndex].pw){return NO_HANDLE_EXIST2;}
+	if(a_pipeIndex>=((pindex_t)a_handle->numberOfWriteToChildDataPipes)){return (sssize_t)OUT_OF_INDEX;}
+	if(!a_handle->pDataToChildPipes[a_pipeIndex].pw){return (sssize_t)NO_HANDLE_EXIST2;}
 
 	return WriteToHandle(a_handle->pDataToChildPipes[a_pipeIndex].pw, a_buffer, a_bufferSize);
 }
 
 
-static handle_t* HandleGetterForAllStatic(void* a_handle, pindex_t a_pipeIndex)
-{
-	THandle pHandle = static_cast<THandle>(a_handle);
-	return &(pHandle->pReadPipes[a_pipeIndex].pr);
-}
+//static handle_t* HandleGetterForAllStatic(void* a_handle, pindex_t a_pipeIndex)
+//{
+//	//THandle pHandle = static_cast<THandle>(a_handle);
+//	return &(static_cast<THandle>(a_handle)->pReadPipes[a_pipeIndex].pr);
+//}
 
 
 pindex_t ReadFromAllPipes(THandle a_handle,void** a_buffers,const size_t* a_buffersSizes, sssize_t* a_pReadSize,int a_timeoutMs)
 {
 	return ReadFromManyPipes(
-		a_handle,a_handle->numberOfReadFromChildPipes,
+		a_handle,(pindex_t)a_handle->numberOfReadFromChildPipes,
 		[](void* a_handleInner, pindex_t a_pipeIndex) {return &(static_cast<THandle>(a_handleInner)->pReadPipes[a_pipeIndex].pr);},
 		a_buffers,a_buffersSizes,a_pReadSize,a_timeoutMs,
 		a_handle->fpWaiterFunction);
@@ -374,8 +354,8 @@ static DWORD WINAPI StdInputRedirectorThread( ::LPVOID a_lpThreadParameter)
 	DWORD dwReadedSize;
 
 	while (pHandle->shouldRun) {
-		if(ReadFile(stdinToRead,vcBuffer,PIPES_SIZE,&dwReadedSize,SYSTEM_NULL)&&(dwReadedSize>0)){
-			WriteFile(pHandle->stdinToWriite.pw, vcBuffer, dwReadedSize, SYSTEM_NULL, SYSTEM_NULL);
+		if(ReadFile(stdinToRead,vcBuffer,PIPES_SIZE,&dwReadedSize,CPPUTILS_NULL)&&(dwReadedSize>0)){
+			WriteFile(pHandle->stdinToWriite.pw, vcBuffer, dwReadedSize, CPPUTILS_NULL, CPPUTILS_NULL);
 		}
 	}
 
@@ -391,7 +371,7 @@ static VOID WINAPI OVERLAPPED_READ_COMPLETION_ROUTINE_GEN_STAT2(
 	if ((a_dwErrorCode != ERROR_OPERATION_ABORTED) && (a_dwErrorCode != ERROR_MR_MID_NOT_FOUND) && (a_dwErrorCode != ERROR_SCOPE_NOT_FOUND)) {
 		struct SOverlapped2* pPipeStr = lblcontainer_of(a_lpOverlapped, struct SOverlapped2, ovrlp);
 		pPipeStr->pHelper->indexOfReader = int32_t(pPipeStr->index);
-		pPipeStr->pHelper->errorCode = a_dwErrorCode;
+		pPipeStr->pHelper->errorCode = (int32_t)a_dwErrorCode;
 		if (!a_dwErrorCode) {
 			pPipeStr->pHelper->sizeReaded = a_dwNumberOfBytesTransfered;
 		}
@@ -408,7 +388,7 @@ static DWORD WINAPI StdOutputsRedirectorThread( ::LPVOID a_lpThreadParameter)
 	char vcBuffer[PIPES_SIZE];
 	DWORD dwWaitReturn;
 	DWORD nNumberOfValidPipes(0);
-	HANDLE	vectReadStdOutOrErr[2]={SYSTEM_NULL,SYSTEM_NULL}, vectWriteStdOutOrErr[2]={SYSTEM_NULL,SYSTEM_NULL};
+	HANDLE	vectReadStdOutOrErr[2]={CPPUTILS_NULL,CPPUTILS_NULL}, vectWriteStdOutOrErr[2]={CPPUTILS_NULL,CPPUTILS_NULL};
 
 	vOverlapped[0].pHelper = &helperStruct;
 	vOverlapped[1].pHelper = &helperStruct;
@@ -450,7 +430,7 @@ static DWORD WINAPI StdOutputsRedirectorThread( ::LPVOID a_lpThreadParameter)
 				(dwWaitReturn == WAIT_IO_COMPLETION) && (helperStruct.indexOfReader >= 0) &&
 				(helperStruct.indexOfReader < 2) && (helperStruct.sizeReaded > 0) &&
 				vectWriteStdOutOrErr[helperStruct.indexOfReader]) {
-				WriteFile(vectWriteStdOutOrErr[helperStruct.indexOfReader], vcBuffer, static_cast<DWORD>(helperStruct.sizeReaded), SYSTEM_NULL, SYSTEM_NULL);
+				WriteFile(vectWriteStdOutOrErr[helperStruct.indexOfReader], vcBuffer, static_cast<DWORD>(helperStruct.sizeReaded), CPPUTILS_NULL, CPPUTILS_NULL);
 			}
 		}  // if(nNumberOfValidPipes){
 
@@ -471,14 +451,14 @@ static void AfterProcessTermination(struct SHandle* a_handle)
 	a_handle->isExeFinished = 1;
 	if (a_handle->prcInfo.hThread) {
 		CloseHandle(a_handle->prcInfo.hThread);
-		a_handle->prcInfo.hThread = SYSTEM_NULL;
+		a_handle->prcInfo.hThread = CPPUTILS_NULL;
 	}
 
 	if(a_handle->prcInfo.hProcess){
 		DWORD dwExeitCode;
 		GetExitCodeProcess(a_handle->prcInfo.hProcess,&dwExeitCode);
 		CloseHandle(a_handle->prcInfo.hProcess);
-		a_handle->prcInfo.hProcess = SYSTEM_NULL;
+		a_handle->prcInfo.hProcess = CPPUTILS_NULL;
 		a_handle->exeReturnCode = static_cast<uint64_t>(dwExeitCode);
 	}
 }
@@ -501,14 +481,14 @@ static void ClearAllHandlesStatic(struct SHandle* a_handle)
 		QueueUserAPC(&UserAPCfunction,a_handle->stdOutputsRedirectorThread,0);
 		WaitForSingleObject(a_handle->stdOutputsRedirectorThread,INFINITE);
 		CloseHandle(a_handle->stdOutputsRedirectorThread);
-		a_handle->stdOutputsRedirectorThread = SYSTEM_NULL;
+		a_handle->stdOutputsRedirectorThread = CPPUTILS_NULL;
 	}
 
 	if(a_handle->stdInputRedirectorThread){
 		CancelSynchronousIo(a_handle->stdInputRedirectorThread);
 		WaitForSingleObject(a_handle->stdInputRedirectorThread,INFINITE);
 		CloseHandle(a_handle->stdInputRedirectorThread);
-		a_handle->stdInputRedirectorThread = SYSTEM_NULL;
+		a_handle->stdInputRedirectorThread = CPPUTILS_NULL;
 	}
 
 	// standard pipes
@@ -520,8 +500,8 @@ static void ClearAllHandlesStatic(struct SHandle* a_handle)
 		a_handle->pReadPipes[i].DestroyPipeStruct();
 	}
 
-	if(a_handle->stdoutToRead){CloseHandle(a_handle->stdoutToRead);a_handle->stdoutToRead=SYSTEM_NULL;}
-	if(a_handle->stderrToRead){CloseHandle(a_handle->stderrToRead);a_handle->stderrToRead=SYSTEM_NULL;}
+	if(a_handle->stdoutToRead){CloseHandle(a_handle->stdoutToRead);a_handle->stdoutToRead=CPPUTILS_NULL;}
+	if(a_handle->stderrToRead){CloseHandle(a_handle->stderrToRead);a_handle->stderrToRead=CPPUTILS_NULL;}
 
 	// write pipes
 	a_handle->remoteControlPipeWrite.InitPipeStruct();
@@ -547,7 +527,7 @@ int SPipeStruct::InitPipeStruct(void)
 	SECURITY_ATTRIBUTES secAttr;
 
 	secAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-	secAttr.lpSecurityDescriptor = SYSTEM_NULL;
+	secAttr.lpSecurityDescriptor = CPPUTILS_NULL;
 	secAttr.bInheritHandle = TRUE;
 
 #ifdef USE_ANON_PIPE
@@ -557,7 +537,7 @@ int SPipeStruct::InitPipeStruct(void)
 	}
 #else
 	char vcPipeName[512];
-	int nPid = GetCurrentProcessId();
+	int nPid = (int)GetCurrentProcessId();
 	_snprintf_s(vcPipeName,511,511,"\\\\.\\pipe\\%d_%p",nPid,this);
 	this->pw = CreateNamedPipeA(
 		vcPipeName,             // pipe name 
@@ -576,14 +556,14 @@ int SPipeStruct::InitPipeStruct(void)
 		return -2;
 	}
 
-	this->pr = CreateFileA(vcPipeName, GENERIC_READ , FILE_SHARE_READ | FILE_SHARE_WRITE, &secAttr, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, SYSTEM_NULL);
-	//this->pr = CreateFileA(vcPipeName, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, &secAttr, OPEN_EXISTING, 0, SYSTEM_NULL);
+	this->pr = CreateFileA(vcPipeName, GENERIC_READ , FILE_SHARE_READ | FILE_SHARE_WRITE, &secAttr, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, CPPUTILS_NULL);
+	//this->pr = CreateFileA(vcPipeName, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, &secAttr, OPEN_EXISTING, 0, CPPUTILS_NULL);
 	if((!this->pr)||(this->pr==INVALID_HANDLE_VALUE)){
 		this->DestroyPipeStruct();
 		return -3;
 	}
 
-	if((!ConnectNamedPipe(this->pw, SYSTEM_NULL))&&(GetLastError()!=ERROR_PIPE_CONNECTED)){
+	if((!ConnectNamedPipe(this->pw, CPPUTILS_NULL))&&(GetLastError()!=ERROR_PIPE_CONNECTED)){
 		this->DestroyPipeStruct();
 		return -4;
 	}
@@ -599,15 +579,12 @@ void SPipeStruct::DestroyPipeStruct(void)
 	if (this->pr) { DisconnectNamedPipe(this->pr); }
 	if (this->pw) { DisconnectNamedPipe(this->pw); }
 #endif
-	if (this->pr) { CloseHandle(this->pr); this->pr = SYSTEM_NULL; }
-	if (this->pw) { CloseHandle(this->pw); this->pw = SYSTEM_NULL; }
+	if (this->pr) { CloseHandle(this->pr); this->pr = CPPUTILS_NULL; }
+	if (this->pw) { CloseHandle(this->pw); this->pw = CPPUTILS_NULL; }
 }
 
 
-}}} // namespace systemN { namespace exe { namespace parent{
+}}}  //  namespace namespace systemN { namespace exe { namespace parent{
 
 
-#endif  // #ifdef _WIN32
-
-
-#endif  // #ifdef DEVSHEET_EXE_START_IS_POSSIBLE
+#endif  //  #ifdef _WIN32

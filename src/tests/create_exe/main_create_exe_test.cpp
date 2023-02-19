@@ -20,7 +20,7 @@ int main(int a_argc, char* a_argv[])
         return 1;
     }
 
-    systemN::exe::parent::THandle aHandle = systemN::exe::parent::RunNoWaitU(0,0,a_argv+1,SYSTEM_NULL,1);
+    systemN::exe::parent::THandle aHandle = systemN::exe::parent::RunNoWaitU(0,0,a_argv+1,CPPUTILS_NULL,1);
 
     if(!aHandle){
         ::std::cerr<< "Unamble to create\n";

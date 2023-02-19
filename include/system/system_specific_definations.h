@@ -14,12 +14,13 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
+//#pragma warning(disable:4244)//TLeaf.h(121,72): warning C4244: 'return': conversion from 'Double_t' to 'Long64_t', possible loss of data
 #endif
 
-#include <system_internal_header.h>
+#include <system/export_symbols.h>
 #include <stddef.h>
 
-SYSTEM_BEGIN_C
+CPPUTILS_BEGIN_C
 
 #ifdef _WIN32
 
@@ -30,12 +31,12 @@ SYSTEM_BEGIN_C
 
 #define dlclose			FreeLibrary
 #define dlsym			GetProcAddress
-#define STDOUT_FILENO	SYSTEM_REINTERPRET_CAST(HANDLE,STD_OUTPUT_HANDLE)
+#define STDOUT_FILENO	CPPUTILS_REINTERPRET_CAST(HANDLE,STD_OUTPUT_HANDLE)
 
 typedef DWORD ssize_t;
 typedef HMODULE LibHandleType;
 
-//int sys_dprintf(HANDLE a_file, const char* a_cpcFormat, ...);
+SYSTEM_EXPORT int sys_dprintf(HANDLE a_file, const char* a_cpcFormat, ...);
 
 #else   // #ifdef _WIN32
 
@@ -50,7 +51,7 @@ typedef void* LibHandleType;
 #endif  // #ifdef _WIN32
 
 
-SYSTEM_END_C
+CPPUTILS_END_C
 
 
 
