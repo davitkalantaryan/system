@@ -108,14 +108,14 @@ returnPoint:
 	BOOL bRetByReadEx;
 	DWORD nNumberOfValidPipes(0);
 	SPipeHelperData aHelper{0,-1};
-	SOverlapped* pOverlapped = static_cast<SOverlapped*>( calloc(a_handlesCount,sizeof(struct SOverlapped)) );
+	SOverlapped* pOverlapped = static_cast<SOverlapped*>( calloc((size_t)a_handlesCount,sizeof(struct SOverlapped)) );
 
 	if(!pOverlapped){
 		return COMMON_SYSTEM_RW_NO_MEM; // no need to jump to return for cleanup
 	}
 
 	if(!a_fpWait){
-		a_fpWait = [](void*, int a_timeoutMs) {return SleepEx(a_timeoutMs,TRUE);};
+		a_fpWait = [](void*, int a_timeoutMs) {return SleepEx((DWORD)a_timeoutMs,TRUE);};
 	}
 
 	for(i=0;i< a_handlesCount;++i){
@@ -143,8 +143,8 @@ returnPoint:
 	}
 
 	while((!aHelper.errorCode)&&(!aHelper.sizeReaded)){
-		if ( (nWaitReturn=(*a_fpWait)(a_handlesParent,a_timeoutMs)) != WAIT_IO_COMPLETION) {
-			ssnReturn = (nWaitReturn== WAIT_TIMEOUT)?COMMON_SYSTEM_TIMEOUT:(COMMON_SYSTEM_RW_INTERRUPTED-nWaitReturn);
+		if ( (nWaitReturn=(int)(*a_fpWait)(a_handlesParent,a_timeoutMs)) != WAIT_IO_COMPLETION) {
+			ssnReturn = (nWaitReturn== WAIT_TIMEOUT)?((pindex_t)COMMON_SYSTEM_TIMEOUT):((pindex_t)(COMMON_SYSTEM_RW_INTERRUPTED-nWaitReturn));
 			goto returnPoint;
 		}
 
@@ -161,14 +161,14 @@ returnPoint:
 	}
 
 	if (aHelper.errorCode) {
-		pCurHandle = (*a_fpHandleGetter)(a_handlesParent, aHelper.indexOfReader);
+		pCurHandle = (*a_fpHandleGetter)(a_handlesParent, (pindex_t)aHelper.indexOfReader);
 		CloseHandle(*pCurHandle); *pCurHandle = CPPUTILS_NULL;
 		ssnReturn = COMMON_SYSTEM_PIPE_CLOSED;
 		goto returnPoint;
 	}
 
 	*a_pReadSize = static_cast<sssize_t>(aHelper.sizeReaded);
-	ssnReturn= aHelper.indexOfReader;
+	ssnReturn= (pindex_t)aHelper.indexOfReader;
 returnPoint:
 
 	for(i=0;i< a_handlesCount;++i){
@@ -199,7 +199,7 @@ static VOID WINAPI OVERLAPPED_READ_COMPLETION_ROUTINE_GEN_STAT(
 	if((a_dwErrorCode!=ERROR_OPERATION_ABORTED)&&(a_dwErrorCode!=ERROR_MR_MID_NOT_FOUND)&&(a_dwErrorCode!=ERROR_SCOPE_NOT_FOUND) ){
 		struct SOverlapped* pPipeStr = lblcontainer_of(a_lpOverlapped, struct SOverlapped, ovrlp);
 		pPipeStr->pHelper->indexOfReader = int32_t(pPipeStr->index);
-		pPipeStr->pHelper->errorCode = a_dwErrorCode;
+		pPipeStr->pHelper->errorCode = (int32_t)a_dwErrorCode;
 		if (!a_dwErrorCode) {
 			pPipeStr->pHelper->sizeReaded = a_dwNumberOfBytesTransfered;
 		}

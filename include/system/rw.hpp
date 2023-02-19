@@ -13,9 +13,19 @@
 
 #include <system/export_symbols.h>
 #include <stddef.h>
-#include <string>
 #include <stdint.h>
+
+#ifdef _MSC_VER
+#pragma warning (push)
+#pragma warning (disable:4365)
+#endif
+#include <string>
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif
+
 #ifdef _WIN32
+#include <cinternal/disable_compiler_warnings.h>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <Windows.h>
