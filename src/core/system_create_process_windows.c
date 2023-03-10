@@ -69,38 +69,34 @@ SYSTEM_EXPORT TSystemProcessHandlePtr SystemCreateProcessU(char* a_argv[])
 
 SYSTEM_EXPORT TSystemProcessHandlePtr SystemCreateProcessW(const char* a_binaryName, char* a_commandLine)
 {
-	DWORD dwErrCode;
+	BOOL bCrtPrcRet;
 	TSystemProcessHandlePtr pReturn = CPPUTILS_STATIC_CAST(TSystemProcessHandlePtr,(malloc(sizeof(struct SSystemProcessHandle))));
 	if (!pReturn) {
 		return CPPUTILS_NULL;
 	}
 
 	ZeroMemory(&(pReturn->startupInfo), sizeof(STARTUPINFOA));
-	//aStartInfo.dwFlags = STARTF_USESTDHANDLES;
-	pReturn->startupInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
-	pReturn->startupInfo.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
-	pReturn->startupInfo.hStdError = GetStdHandle(STD_ERROR_HANDLE);
-	pReturn->startupInfo.wShowWindow = SW_HIDE;
+	pReturn->startupInfo.wShowWindow = SW_SHOWNOACTIVATE;
 
-	dwErrCode = CreateProcessA(
+	bCrtPrcRet = CreateProcessA(
 		a_binaryName,
 		a_commandLine,
 		CPPUTILS_NULL,
 		CPPUTILS_NULL,
-		TRUE,
-		NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW,
-		NULL,
-		NULL,
+		FALSE,
+		0,
+		CPPUTILS_NULL,
+		CPPUTILS_NULL,
 		&(pReturn->startupInfo),
 		&(pReturn->procInfo)
 	);
 
-	if (dwErrCode) {
-		return pReturn;
+	if (!bCrtPrcRet) {
+		free(pReturn);
+		return CPPUTILS_NULL;
 	}
 
-	free(pReturn);
-	return CPPUTILS_NULL;
+	return pReturn;
 }
 
 
