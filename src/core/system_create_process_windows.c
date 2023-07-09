@@ -16,6 +16,7 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <Windows.h>
+#include <cinternal/undisable_compiler_warnings.h>
 
 #define SYSTEM_ALLOC_STEP	4096
 
