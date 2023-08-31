@@ -6,7 +6,7 @@
 #
 
 message("!!! $${_PRO_FILE_}")
-include ( "$${PWD}/../../common/common_qt/flagsandsys_common.pri" )
+include ( "$${PWD}/../../common/common_qt/flagsandsys_common_private.pri" )
 DESTDIR     = "$${artifactRoot}/sys/$${CODENAME}/$$CONFIGURATION/test"
 
 QT -= gui
@@ -31,7 +31,7 @@ SOURCES	+=		\
 	"$${PWD}/../../../src/core/cpputils_hashtbl.cpp"			\
 	"$${PWD}/../../../src/core/cpputils_inscopecleaner.cpp"
 
-HEADERS += $$files($${cpputilsRepoRoot}/include/*.h,true)
-HEADERS += $$files($${cpputilsRepoRoot}/include/*.hpp,true)
+HEADERS += $$files($${systemRepositoryRoot}/include/*.h,true)
+HEADERS += $$files($${systemRepositoryRoot}/include/*.hpp,true)
 
 OTHER_FILES += $$files($${PWD}/../any_quick_test_mkfl/*.Makefile,false)

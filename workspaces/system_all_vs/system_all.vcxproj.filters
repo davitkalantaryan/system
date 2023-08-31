@@ -40,6 +40,9 @@
     <Filter Include="repo_files\.github\workflows">
       <UniqueIdentifier>{628d4968-ba8d-4236-8c3c-46fcd2e0ba38}</UniqueIdentifier>
     </Filter>
+    <Filter Include="files">
+      <UniqueIdentifier>{517f2afe-84bb-4a94-aea6-f1a0e5cf46ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\utils\entry_system_all.cpp">
@@ -126,6 +129,12 @@
     </None>
     <None Include="..\..\.github\workflows\check_merge_to_master_and_develop.yml">
       <Filter>repo_files\.github\workflows</Filter>
+    </None>
+    <None Include="..\system_all_mkfl\system_all.unix.Makefile">
+      <Filter>files</Filter>
+    </None>
+    <None Include="..\system_all_qt\system_all.pro">
+      <Filter>files</Filter>
     </None>
   </ItemGroup>
 </Project>

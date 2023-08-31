@@ -339,6 +339,8 @@
     <None Include="..\..\scripts\windows_prepare_repository.bat" />
     <None Include="..\..\scripts\windows_run_tests.bat" />
     <None Include="..\..\scripts\windows_set_vs_toolset_and_run.bat" />
+    <None Include="..\system_all_mkfl\system_all.unix.Makefile" />
+    <None Include="..\system_all_qt\system_all.pro" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

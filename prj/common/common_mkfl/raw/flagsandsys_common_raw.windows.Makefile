@@ -1,5 +1,5 @@
 #
-# repo:		cpputils
+# repo:		system
 # file:		flagsandsys_common_pure.windows.Makefile
 # created on:	2020 Dec 14
 # created by:	Davit Kalantaryan (davit.kalantaryan@desy.de)
@@ -10,17 +10,17 @@
 MakeFileDir			= $(MAKEDIR)\..
 !ENDIF
 
-!IFNDEF cpputilsRepoRoot
-cpputilsRepoRoot	= $(MakeFileDir)\..\..\..
+!IFNDEF systemRepositoryRoot
+systemRepositoryRoot	= $(MakeFileDir)\..\..\..
 !ENDIF
 
 !IFNDEF artifactRoot
-artifactRoot	= $(cpputilsRepoRoot)
+artifactRoot	= $(systemRepositoryRoot)
 !ENDIF
 
 !IFNDEF cinternalRepoRoot
-cinternalRepoRoot	= $(cpputilsRepoRoot)\contrib\cinternal
+cinternalRepoRoot	= $(systemRepositoryRoot)\contrib\cinternal
 !ENDIF
 
 !include <$(cinternalRepoRoot)\prj\common\common_mkfl\flagsandsys_common.windows.Makefile>
-CFLAGS				= $(CFLAGS) /I"$(cpputilsRepoRoot)\include"
+CFLAGS				= $(CFLAGS) /I"$(systemRepositoryRoot)\include"

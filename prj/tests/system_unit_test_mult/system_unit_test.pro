@@ -1,6 +1,6 @@
 #
-# file:			cpputils_unit_test.pro
-# path:			prj/tests/cpputils_unit_test_mult/cpputils_unit_test.pro
+# file:			system_unit_test.pro
+# path:			prj/tests/system_unit_test_mult/system_unit_test.pro
 # created on:	2021 Mar 27
 # created by:	Davit Kalantaryan
 #
@@ -25,8 +25,8 @@ win32{
 DEFINES += CINTERNAL_UNIT_TEST_USE_GTEST_LIKE_MACROSES
 
 
-SOURCES	+= $$files($${directoryIteratorRepoRoot}/src/core/*.c)  # I assume, that in core we will not have subdirs
-SOURCES += $$files($${directoryIteratorRepoRoot}/src/tests/unit_test/*.cpp)
+SOURCES	+= $$files($${systemkRepositoryRoot}/src/core/*.c)  # I assume, that in core we will not have subdirs
+SOURCES += $$files($${systemkRepositoryRoot}/src/tests/unit_test/*.cpp)
 
 SOURCES +=  \
     "$${cinternalRepoRoot}/src/core/cinternal_core_logger.c"				\
@@ -35,7 +35,7 @@ SOURCES +=  \
 
 
 
-HEADERS =  $$files($${directoryIteratorRepoRoot}/include/*.h,true)
-HEADERS += $$files($${directoryIteratorRepoRoot}/include/*.hpp,true)
+HEADERS =  $$files($${systemRepositoryRoot}/include/*.h,true)
+HEADERS += $$files($${systemRepositoryRoot}/include/*.hpp,true)
 
 OTHER_FILES += $$files($${PWD}/*.Makefile)
