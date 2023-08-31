@@ -6,12 +6,14 @@
 // Here is functions, that is used to call system routines and binaries
 //
 
-#include <common/system/handlelib.hpp>
+#include <system/handlelib.hpp>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#ifdef _WIN32
 
+#include <cinternal/disable_compiler_warnings.h>
+
+#ifdef _WIN32
 #ifndef CINTERFACE
 #define CINTERFACE
 #define CINTERFACE_here_defined
@@ -37,6 +39,8 @@
 #include <dlfcn.h>
 
 #endif
+
+#include <cinternal/undisable_compiler_warnings.h>
 
 namespace common{ namespace system {
 

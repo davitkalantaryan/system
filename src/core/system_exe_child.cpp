@@ -69,8 +69,8 @@ SYSTEM_EXPORT sssize_t ReadDataFromParent(pindex_t a_pipeIndex, void* a_buffer, 
 	void* vBuffers[1] = { a_buffer };
 	const size_t vBufferSizes[1] = { a_bufferSize };
 
-	if (!s_pnDataPipeFromParent) { return NO_HANDLE_EXIST2; }
-	if (a_pipeIndex >= s_nNumberOfDataPipesFromParent) { return OUT_OF_INDEX; }
+	if (!s_pnDataPipeFromParent) { return (sssize_t)NO_HANDLE_EXIST2; }
+	if (a_pipeIndex >= s_nNumberOfDataPipesFromParent) { return (sssize_t)OUT_OF_INDEX; }
 	ReadFromManyPipes(
 		&s_pnDataPipeFromParent, 1,
 		[](void* a_handleInner, pindex_t) {return static_cast<handle_t*>(a_handleInner); },
@@ -81,8 +81,8 @@ SYSTEM_EXPORT sssize_t ReadDataFromParent(pindex_t a_pipeIndex, void* a_buffer, 
 
 SYSTEM_EXPORT sssize_t WriteDataToParent(pindex_t a_pipeIndex, const void* a_buffer, size_t a_bufferSize)
 {
-	if (!s_pnDataPipeToParent) { return NO_HANDLE_EXIST2; }
-	if (a_pipeIndex >= s_nNumberOfDataPipesToParent) { return OUT_OF_INDEX; }
+	if (!s_pnDataPipeToParent) { return (sssize_t)NO_HANDLE_EXIST2; }
+	if (a_pipeIndex >= s_nNumberOfDataPipesToParent) { return (sssize_t)OUT_OF_INDEX; }
 
 
 	return WriteToHandle(s_pnDataPipeToParent[a_pipeIndex], a_buffer, a_bufferSize);

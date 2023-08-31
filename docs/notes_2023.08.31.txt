@@ -1,0 +1,11 @@
+
+
+   systemRepositoryRoot
+   
+   $(MSBuildThisFileDirectory)..\..\..
+   
+   SystemVirtWorkspaceDir
+   
+   SystemVirtProjectDir
+   
+   $(PlatformToolsetVar)

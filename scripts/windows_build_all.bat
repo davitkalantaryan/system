@@ -1,5 +1,5 @@
 ::
-:: repository:		directory_iterator
+:: repository:		system
 :: file:			windows_build_all.bat
 :: path:			scripts/windows_build_all.bat
 :: created on:		2023 Feb 03
@@ -51,16 +51,16 @@ for %%x in (%*) do (
 )
 
 echo action=%ActionConfirm%,PlatformTarget=!PlatformTarget!,configuration=%Configuration%
-cd "%repositoryRoot%prj\tests\diriter_unit_test_mult"
+cd "%repositoryRoot%prj\tests\system_unit_test_mult"
 if not "!ERRORLEVEL!"=="0" (exit /b !ERRORLEVEL!)
 
 for %%p in (%PlatformTarget%) do (
 	echo "!!!!!!!!!!!! platform %%p"
 	for %%c in (%Configuration%) do (
 		echo "!!!!!!!!!!!! !!!!!!!!!!!! compiling for configuration %%c"
-		call msbuild "%repositoryRoot%workspaces\directory_iterator_all_vs\directory_iterator_all.sln" /t:!ActionConfirm! /p:Configuration=%%c /p:Platform=%%p
+		call msbuild "%repositoryRoot%workspaces\system_all_vs\system_all.sln" /t:!ActionConfirm! /p:Configuration=%%c /p:Platform=%%p
 		if not "!ERRORLEVEL!"=="0" (exit /b !ERRORLEVEL!)
-		call nmake -f diriter_unit_test.windows.Makefile /e Platform=%%p /e Configuration=%%c
+		call nmake -f system_unit_test.windows.Makefile /e Platform=%%p /e Configuration=%%c
 		if not "!ERRORLEVEL!"=="0" (exit /b !ERRORLEVEL!)
 	)
 )

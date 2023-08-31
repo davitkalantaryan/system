@@ -12,6 +12,7 @@ TEMPLATE = subdirs
 
 include ( "$${PWD}/../../prj/common/common_qt/flagsandsys_common.pri" )
 
+SUBDIRS		+=	"$${systemRepositoryRoot}/prj/tests/create_exe_test_qt/create_exe_test.pro"
 SUBDIRS		+=	"$${systemRepositoryRoot}/prj/tests/any_quick_test_qt/any_quick_test.pro"
 SUBDIRS		+=	"$${systemRepositoryRoot}/prj/tests/system_unit_test_mult/system_unit_test.pro"
 

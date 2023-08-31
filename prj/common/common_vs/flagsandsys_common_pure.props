@@ -22,7 +22,7 @@ $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <cpputilsRepoRoot>$(MSBuildThisFileDirectory)..\..\..</cpputilsRepoRoot>
+    <systemRepositoryRoot>$(MSBuildThisFileDirectory)..\..\..</systemRepositoryRoot>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <PreBuildEvent>
@@ -41,8 +41,8 @@ $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <BuildMacro Include="cpputilsRepoRoot">
-      <Value>$(cpputilsRepoRoot)</Value>
+    <BuildMacro Include="systemRepositoryRoot">
+      <Value>$(systemRepositoryRoot)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
   </ItemGroup>

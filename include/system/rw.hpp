@@ -43,14 +43,14 @@ typedef handle_t* (*HandleGetterType)(void*, pindex_t);
 typedef sssize_t (*WaitFunctionType)(void*, int timeoutMs);
 
 // some return codes
-#define NO_HANDLE_EXIST2				-1980
-#define OUT_OF_INDEX					-1981
-#define UNABLE_TO_READ					-1982
-#define COMMON_SYSTEM_TIMEOUT			-1983
-#define COMMON_SYSTEM_UNKNOWN			-1984
-#define COMMON_SYSTEM_PIPE_CLOSED		-1985
-#define COMMON_SYSTEM_RW_NO_MEM			-1986
-#define COMMON_SYSTEM_RW_INTERRUPTED	-1987
+#define NO_HANDLE_EXIST2				(-1980)
+#define OUT_OF_INDEX					(-1981)
+#define UNABLE_TO_READ					(-1982)
+#define COMMON_SYSTEM_TIMEOUT			(-1983)
+#define COMMON_SYSTEM_UNKNOWN			(-1984)
+#define COMMON_SYSTEM_PIPE_CLOSED		(-1985)
+#define COMMON_SYSTEM_RW_NO_MEM			(-1986)
+#define COMMON_SYSTEM_RW_INTERRUPTED	(-1987)
 
 //#define NUMBER_OF_EXE_READ_PIPES2		int8_t(3) // stdoutRead, stderrRead, dataFromChild, controlPipe[0]
 #define CONTROL_RD_EXE_PIPE				0

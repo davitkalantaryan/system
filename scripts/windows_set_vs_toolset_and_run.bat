@@ -2,6 +2,7 @@
 @echo off
 
 rem
+rem	repository:		system
 rem file:			windows_set_vs_toolset_and_run.bat
 rem path:			scripts/windows_set_vs_toolset_and_run.bat
 rem created on:		2023 May 18
@@ -22,6 +23,6 @@ set "PlatformToolsetVar=v%PlatformToolsetVarMid%%PlatformToolsetVarEnd%"
 echo PlatformToolsetVar=%PlatformToolsetVar%
 
 
-devenv workspaces\directory_iterator_all_vs\directory_iterator_all.sln
+devenv workspaces\system_all_vs\system_all.sln
 
 endlocal

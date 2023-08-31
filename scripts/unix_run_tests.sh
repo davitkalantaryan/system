@@ -52,4 +52,4 @@ fi
 
 cd ${repositoryRoot}/sys/${lsbCode}/Debug/test
 
-./diriter_unit_test
+./system_unit_test
