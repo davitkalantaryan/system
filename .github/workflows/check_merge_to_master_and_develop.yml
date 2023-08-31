@@ -46,14 +46,14 @@ jobs:
               #    toolset: v142
 
             - name: Preparing windows host
-              run: cmd /C .\scripts\windows_prepare_host.bat
+              run: cmd /C "call .\scripts\windows_prepare_host.bat"
 
             - name: Preparing windows repository
-              run: cmd /C .\scripts\windows_prepare_repository.bat
+              run: cmd /C "call .\scripts\windows_prepare_repository.bat"
 
             - name: Compiling for windows
               run: cmd /C "call .\scripts\windows_build_all.bat"
               #working-directory: blabla
 
             - name: running tests for windows
-              run: cmd /C .\scripts\windows_run_tests.bat
+              run: cmd /C "call .\scripts\windows_run_tests.bat"

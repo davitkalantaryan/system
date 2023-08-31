@@ -34,6 +34,12 @@
     <Filter Include="repo_files\scripts">
       <UniqueIdentifier>{440bf327-a0d5-4f44-b155-8f2915950a9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="repo_files\.github">
+      <UniqueIdentifier>{f28b1c0a-a821-42b5-aa9a-86f861a08bc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="repo_files\.github\workflows">
+      <UniqueIdentifier>{628d4968-ba8d-4236-8c3c-46fcd2e0ba38}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\utils\entry_system_all.cpp">
@@ -117,6 +123,9 @@
     </None>
     <None Include="..\..\scripts\windows_set_vs_toolset_and_run.bat">
       <Filter>repo_files\scripts</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\check_merge_to_master_and_develop.yml">
+      <Filter>repo_files\.github\workflows</Filter>
     </None>
   </ItemGroup>
 </Project>
