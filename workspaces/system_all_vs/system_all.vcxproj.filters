@@ -13,8 +13,26 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="files">
+    <Filter Include="repo_files">
       <UniqueIdentifier>{62b36e22-faf1-4ddc-8c32-8d0ccf1612f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="repo_files\prj">
+      <UniqueIdentifier>{4b8140db-6ef2-4d29-a2b5-dab30de849e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="repo_files\prj\common">
+      <UniqueIdentifier>{ad392dbb-0b86-42fb-b52a-d542fbca6ddd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="repo_files\prj\common\common_mkfl">
+      <UniqueIdentifier>{150e410a-b5a7-447c-92ea-4ee0f7659f02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="repo_files\prj\common\common_mkfl\raw">
+      <UniqueIdentifier>{3dc98354-bb9f-405d-878b-82841a0182ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="repo_files\prj\common\common_qt">
+      <UniqueIdentifier>{289c7f5c-66b3-4b1a-876d-bf096d939fea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="repo_files\scripts">
+      <UniqueIdentifier>{440bf327-a0d5-4f44-b155-8f2915950a9b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -29,19 +47,76 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\.gitattributes">
-      <Filter>files</Filter>
+      <Filter>repo_files</Filter>
     </None>
     <None Include="..\..\.gitignore">
-      <Filter>files</Filter>
+      <Filter>repo_files</Filter>
     </None>
     <None Include="..\..\.gitmodules">
-      <Filter>files</Filter>
+      <Filter>repo_files</Filter>
     </None>
     <None Include="..\..\LICENSE">
-      <Filter>files</Filter>
+      <Filter>repo_files</Filter>
     </None>
     <None Include="..\..\README.md">
-      <Filter>files</Filter>
+      <Filter>repo_files</Filter>
+    </None>
+    <None Include="..\..\prj\common\common_mkfl\flagsandsys_common.unix.Makefile">
+      <Filter>repo_files\prj\common\common_mkfl</Filter>
+    </None>
+    <None Include="..\..\prj\common\common_mkfl\flagsandsys_common.windows.Makefile">
+      <Filter>repo_files\prj\common\common_mkfl</Filter>
+    </None>
+    <None Include="..\..\prj\common\common_mkfl\flagsandsys_common_private.unix.Makefile">
+      <Filter>repo_files\prj\common\common_mkfl</Filter>
+    </None>
+    <None Include="..\..\prj\common\common_mkfl\flagsandsys_common_private.windows.Makefile">
+      <Filter>repo_files\prj\common\common_mkfl</Filter>
+    </None>
+    <None Include="..\..\prj\common\common_mkfl\raw\flagsandsys_common_private_raw.unix.Makefile">
+      <Filter>repo_files\prj\common\common_mkfl\raw</Filter>
+    </None>
+    <None Include="..\..\prj\common\common_mkfl\raw\flagsandsys_common_private_raw.windows.Makefile">
+      <Filter>repo_files\prj\common\common_mkfl\raw</Filter>
+    </None>
+    <None Include="..\..\prj\common\common_mkfl\raw\flagsandsys_common_raw.unix.Makefile">
+      <Filter>repo_files\prj\common\common_mkfl\raw</Filter>
+    </None>
+    <None Include="..\..\prj\common\common_mkfl\raw\flagsandsys_common_raw.windows.Makefile">
+      <Filter>repo_files\prj\common\common_mkfl\raw</Filter>
+    </None>
+    <None Include="..\..\prj\common\common_qt\flagsandsys_common.pri">
+      <Filter>repo_files\prj\common\common_qt</Filter>
+    </None>
+    <None Include="..\..\prj\common\common_qt\flagsandsys_common_private.pri">
+      <Filter>repo_files\prj\common\common_qt</Filter>
+    </None>
+    <None Include="..\..\scripts\unix_build_all.sh">
+      <Filter>repo_files\scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\unix_prepare_host.sh">
+      <Filter>repo_files\scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\unix_prepare_repository.sh">
+      <Filter>repo_files\scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\unix_run_tests.sh">
+      <Filter>repo_files\scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\windows_build_all.bat">
+      <Filter>repo_files\scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\windows_prepare_host.bat">
+      <Filter>repo_files\scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\windows_prepare_repository.bat">
+      <Filter>repo_files\scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\windows_run_tests.bat">
+      <Filter>repo_files\scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\windows_set_vs_toolset_and_run.bat">
+      <Filter>repo_files\scripts</Filter>
     </None>
   </ItemGroup>
 </Project>

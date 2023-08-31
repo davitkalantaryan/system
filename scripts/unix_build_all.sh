@@ -21,27 +21,12 @@ do
 	cd "${scriptDirectory}"
 	fileOrigin=`readlink "${scriptFileName}"`  || :
 done
-cd ../..
+cd ..
 repositoryRoot=`pwd`
 echo repositoryRoot=$repositoryRoot
 
-
-# thanks to https://stackoverflow.com/questions/3466166/how-to-check-if-running-in-cygwin-mac-or-linux
-if [[ "$(uname)" == "Darwin" ]]; then
-	# Do something under Mac OS X platform
-	lsbCode=mac
-elif [[ "$(expr substr $(uname -s) 1 5)" == "Linux" ]]; then
-	# Do something under GNU/Linux platform
-	lsbCode=`lsb_release -sc`
-#elif [[ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]]; then
-#	# Do something under 32 bits Windows NT platform
-#elif [[ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]]; then
-#	# Do something under 64 bits Windows NT platform
-#else
-fi
-
-cd ${repositoryRoot}/prj/tests/googletest_mult
+cd workspaces/directory_iterator_all_mkfl
 unset CPPUTILS_DEBUG
-make -f unix.Makefile all
-# to make debug use line below
-make -f unix.Makefile all CPPUTILS_DEBUG=1
+make -f directory_iterator_all.unix.Makefile CPPUTILS_RELEASE=1
+unset CPPUTILS_RELEASE
+make -f directory_iterator_all.unix.Makefile CPPUTILS_DEBUG=1

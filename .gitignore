@@ -64,6 +64,7 @@
 !/prj/*/*_vs/*.props
 #
 !/prj/*/*_mkfl/*Makefile*
+!/prj/*/*_mkfl/raw
 #
 !/prj/*/*_mult/*Makefile
 !/prj/*/*_mult/*.sln
@@ -78,19 +79,13 @@
 !/workspaces/*_vs/*.sln
 !/workspaces/*_vs/*.vcxproj
 !/workspaces/*_vs/*.vcxproj.filters
+#
+!/workspaces/*_mkfl/*Makefile*
 
 #/scripts/test_include_sourse.sh
 
 prj/tests/googletest_mult/Makefile.googletest_getter
 
 /.private
-/package/*.exe
-/package/packages/*/data
-/package/packages/*/meta/license.txt
-/package/config/*.png
-/package/config/*.ico
-/package/config/*.icns
 
-/prj/core/zlib_st_vs/zlib_st.vcxproj.filters
-/prj/core/zlib_vs/zlib.vcxproj.filters
-/prj/core/zlib_st_dl_vs/zlib_st_dl.vcxproj.filters
+*.cpp.autosave

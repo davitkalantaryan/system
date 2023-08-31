@@ -1,8 +1,0 @@
-#!/bin/bash
-
-MakeQuotes()
-{
-	echo '"'$1'"'
-}
-
-find "$1" -name "*$2" | while read line ; do MakeQuotes "$line" ; done
