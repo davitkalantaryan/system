@@ -24,4 +24,9 @@ isEmpty(systemFlagsAndSysCommonIncluded){
     }
 
     INCLUDEPATH += $${systemRepositoryRoot}/include
+
+    LIBS	+= -L$${systemRepositoryRoot}/sys/$${CODENAME}/$$CONFIGURATION/lib
+    LIBS	+= -L$${systemRepositoryRoot}/sys/$${CODENAME}/$$CONFIGURATION/tlib
+
+    OTHER_FILES += $$files($${PWD}/../common_mkfl/*.Makefile,true)
 }
