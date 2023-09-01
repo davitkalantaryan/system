@@ -12,7 +12,7 @@ CORE_SRCS_DIR=$(systemRepositoryRoot)/src/core
 CORE_SRCS_CPP	= $(shell find $(CORE_SRCS_DIR) -name "*.cpp")
 CORE_SRCS_C	= $(shell find $(CORE_SRCS_DIR) -name "*.c")
 
-SOURCES += $(cpputilsRepoRoot)/src/tests/main_any_quick_test.cpp
+SOURCES += $(cpputilsRepoRoot)/src/tests/main_any_quick_test.c
 
 LIBS += -pthread
 LIBS += -ldl
