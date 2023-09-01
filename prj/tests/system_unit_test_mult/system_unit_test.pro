@@ -6,7 +6,7 @@
 #
 
 message("!!! $${_PRO_FILE_}")
-include ( "$${PWD}/../../common/common_qt/flagsandsys_common.pri" )
+include ( "$${PWD}/../../common/common_qt/flagsandsys_common_private.pri" )
 DESTDIR     = "$${artifactRoot}/sys/$${CODENAME}/$$CONFIGURATION/test"
 
 QT -= gui
@@ -25,7 +25,8 @@ win32{
 DEFINES += CINTERNAL_UNIT_TEST_USE_GTEST_LIKE_MACROSES
 
 
-SOURCES	+= $$files($${systemRepositoryRoot}/src/core/*.c)  # I assume, that in core we will not have subdirs
+SOURCES	+= $$files($${systemRepositoryRoot}/src/core/*.c,true)
+SOURCES	+= $$files($${systemRepositoryRoot}/src/core/*.cpp,true)
 SOURCES += $$files($${systemRepositoryRoot}/src/tests/unit_test/*.cpp)
 
 SOURCES +=  \
