@@ -55,9 +55,9 @@
     <ClInclude Include="..\..\..\src\core\system_include_private.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="diriter_unit_test.pro" />
-    <None Include="diriter_unit_test.unix.Makefile" />
-    <None Include="diriter_unit_test.windows.Makefile" />
+    <None Include="system_unit_test.pro" />
+    <None Include="system_unit_test.unix.Makefile" />
+    <None Include="system_unit_test.windows.Makefile" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <GoogleTestConfiguration Condition="'$(Configuration)'=='Debug'">d</GoogleTestConfiguration>

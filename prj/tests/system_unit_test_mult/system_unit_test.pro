@@ -25,8 +25,8 @@ win32{
 DEFINES += CINTERNAL_UNIT_TEST_USE_GTEST_LIKE_MACROSES
 
 
-SOURCES	+= $$files($${systemkRepositoryRoot}/src/core/*.c)  # I assume, that in core we will not have subdirs
-SOURCES += $$files($${systemkRepositoryRoot}/src/tests/unit_test/*.cpp)
+SOURCES	+= $$files($${systemRepositoryRoot}/src/core/*.c)  # I assume, that in core we will not have subdirs
+SOURCES += $$files($${systemRepositoryRoot}/src/tests/unit_test/*.cpp)
 
 SOURCES +=  \
     "$${cinternalRepoRoot}/src/core/cinternal_core_logger.c"				\

@@ -85,13 +85,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="diriter_unit_test.pro">
+    <None Include="system_unit_test.pro">
       <Filter>files</Filter>
     </None>
-    <None Include="diriter_unit_test.unix.Makefile">
+    <None Include="system_unit_test.unix.Makefile">
       <Filter>files</Filter>
     </None>
-    <None Include="diriter_unit_test.windows.Makefile">
+    <None Include="system_unit_test.windows.Makefile">
       <Filter>files</Filter>
     </None>
   </ItemGroup>

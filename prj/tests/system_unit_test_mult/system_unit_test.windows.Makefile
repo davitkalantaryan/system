@@ -1,14 +1,14 @@
 #
-# repo:				directory_iterator
-# file:				diriter_unit_test.windows.Makefile
+# repo:				system
+# file:				system_unit_test.windows.Makefile
 # created on:	    2020 Dec 02
 # created by:		Davit Kalantaryan (davit.kalantaryan@desy.de)
 #
 
 
-MakeFileName            = diriter_unit_test.windows.Makefile
+MakeFileName            = system_unit_test.windows.Makefile
 MakeFileDir				= $(MAKEDIR)
-TargetName				= diriter_unit_test_mkfl
+TargetName				= system_unit_test_mkfl
 TargetExtension			= exe
 TargetCategory          = test
 SrcBaseDir				= $(MakeFileDir)\..\..\..\src
