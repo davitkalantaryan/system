@@ -14,14 +14,15 @@ isEmpty(systemFlagsAndSysCommonIncluded){
     systemFlagsAndSysCommonIncluded = 1
 
     systemRepositoryRoot = $${PWD}/../../..
-        include("$${systemRepositoryRoot}/contrib/cinternal/prj/common/common_qt/flagsandsys_common.pri")
 
     isEmpty(artifactRoot) {
         artifactRoot = $$(artifactRoot)
-		isEmpty(artifactRoot) {
+	        isEmpty(artifactRoot) {
 		        artifactRoot = $${systemRepositoryRoot}
 		}
     }
+
+    include("$${systemRepositoryRoot}/contrib/cinternal/prj/common/common_qt/flagsandsys_common.pri")
 
     INCLUDEPATH += $${systemRepositoryRoot}/include
 
