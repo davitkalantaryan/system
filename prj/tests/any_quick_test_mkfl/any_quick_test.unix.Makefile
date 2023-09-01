@@ -8,8 +8,9 @@ firstTarget: all
 
 include $(mkfile_dir)/../../common/common_mkfl/flagsandsys_common_private.unix.Makefile
 
-CORE_SRCS_DIR=$(cpputilsRepoRoot)/src/core
-CORE_SRCS	= $(shell find $(CORE_SRCS_DIR) -name "*.cpp")
+CORE_SRCS_DIR=$(systemRepositoryRoot)/src/core
+CORE_SRCS_CPP	= $(shell find $(CORE_SRCS_DIR) -name "*.cpp")
+CORE_SRCS_C	= $(shell find $(CORE_SRCS_DIR) -name "*.c")
 
 SOURCES += $(cpputilsRepoRoot)/src/tests/main_any_quick_test.cpp
 
@@ -20,7 +21,8 @@ all: $(artifactRoot)/sys/$(lsbCode)/$(Configuration)/test/$(targetName)
 
 $(artifactRoot)/sys/$(lsbCode)/$(Configuration)/test/$(targetName): \
                 $(SOURCES:%=$(artifactRoot)/sys/$(lsbCode)/$(Configuration)/.objects/$(targetName)/%.o)	    \
-		$(CORE_SRCS:%=$(artifactRoot)/sys/$(lsbCode)/$(Configuration)/.objects/$(targetName)/%.o)
+		$(CORE_SRCS_CPP:%=$(artifactRoot)/sys/$(lsbCode)/$(Configuration)/.objects/$(targetName)/%.o)		\
+		$(CORE_SRCS_C:%=$(artifactRoot)/sys/$(lsbCode)/$(Configuration)/.objects/$(targetName)/%.o)
 	@mkdir -p $(@D)
 	@$(LINK) $^ $(LIBS) $(LFLAGS) -o $@
 
