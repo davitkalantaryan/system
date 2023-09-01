@@ -50,8 +50,14 @@
     <ClCompile Include="..\..\..\src\tests\unit_test\0000_initial.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\simple_cpp_bcrypt\bcrypt.h" />
-    <ClInclude Include="..\..\..\include\simple_cpp_bcrypt\export_symbols.h" />
+    <ClInclude Include="..\..\..\include\system\create_process.h" />
+    <ClInclude Include="..\..\..\include\system\exe\child.hpp" />
+    <ClInclude Include="..\..\..\include\system\exe\parent.hpp" />
+    <ClInclude Include="..\..\..\include\system\exe\parent_child_common.hpp" />
+    <ClInclude Include="..\..\..\include\system\export_symbols.h" />
+    <ClInclude Include="..\..\..\include\system\handlelib.hpp" />
+    <ClInclude Include="..\..\..\include\system\rw.hpp" />
+    <ClInclude Include="..\..\..\include\system\system_specific_definations.h" />
     <ClInclude Include="..\..\..\src\core\system_include_private.hpp" />
   </ItemGroup>
   <ItemGroup>

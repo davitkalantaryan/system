@@ -10,10 +10,19 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8D52FDDF-230D-4478-9910-FB7DABB3BE23}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "create_exe_test", "..\..\prj\tests\create_exe_test_vs\create_exe_test.vcxproj", "{91A407C7-4685-4A7E-B12E-774041632298}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B28A7240-ACEB-4B14-A853-5A198D200A19} = {B28A7240-ACEB-4B14-A853-5A198D200A19}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "any_quick_test", "..\..\prj\tests\any_quick_test_vs\any_quick_test.vcxproj", "{CB1D8706-FBD9-4919-A4FC-A29019AC56F9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B28A7240-ACEB-4B14-A853-5A198D200A19} = {B28A7240-ACEB-4B14-A853-5A198D200A19}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "system_unit_test", "..\..\prj\tests\system_unit_test_mult\system_unit_test.vcxproj", "{E6F8B6C2-4CA9-4B3A-9A00-83D011DE88FA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B28A7240-ACEB-4B14-A853-5A198D200A19} = {B28A7240-ACEB-4B14-A853-5A198D200A19}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
