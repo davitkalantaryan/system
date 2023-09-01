@@ -21,6 +21,7 @@ win32{
 	LIBS += -lWs2_32
 } else {
 	LIBS += -pthread
+	LIBS += -ldl
 }
 
 SOURCES += $$files($${PWD}/../../../src/core/*.c,true)

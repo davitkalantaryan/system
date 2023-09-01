@@ -15,6 +15,7 @@ CORE_SRCS_C	= $(shell find $(CORE_SRCS_DIR) -name "*.c")
 SOURCES += $(cpputilsRepoRoot)/src/tests/main_any_quick_test.cpp
 
 LIBS += -pthread
+LIBS += -ldl
 CPPFLAGS += -std=c++11
 
 all: $(artifactRoot)/sys/$(lsbCode)/$(Configuration)/test/$(targetName)

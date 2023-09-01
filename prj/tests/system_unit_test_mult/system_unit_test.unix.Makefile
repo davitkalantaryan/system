@@ -25,6 +25,7 @@ COMMON_FLAGS += -DCINTERNAL_UNIT_TEST_USE_GTEST_LIKE_MACROSES
 CPPFLAGS += -std=c++11
 
 LIBS += -pthread
+LIBS += -ldl
 
 all: $(artifactRoot)/sys/$(lsbCode)/$(Configuration)/test/$(targetName)
 

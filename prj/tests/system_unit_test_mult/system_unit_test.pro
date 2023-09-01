@@ -19,6 +19,7 @@ win32{
 	LIBS += -lWs2_32
 } else {
 	LIBS += -pthread
+	LIBS += -ldl
 }
 
 
