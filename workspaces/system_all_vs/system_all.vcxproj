@@ -44,52 +44,52 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>$(PlatformToolsetVar)</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>$(PlatformToolsetVar)</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>$(PlatformToolsetVar)</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>$(PlatformToolsetVar)</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>$(PlatformToolsetVar)</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>$(PlatformToolsetVar)</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>$(PlatformToolsetVar)</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>$(PlatformToolsetVar)</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -100,75 +100,83 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\prj\common\common_vs\flagsandsys_common.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\prj\common\common_vs\flagsandsys_common.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\prj\common\common_vs\flagsandsys_common.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\prj\common\common_vs\flagsandsys_common.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\prj\common\common_vs\flagsandsys_common.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\prj\common\common_vs\flagsandsys_common.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\prj\common\common_vs\flagsandsys_common.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\prj\common\common_vs\flagsandsys_common.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
-    <IntDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
+    <OutDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
+    <IntDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
-    <IntDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
+    <OutDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
+    <IntDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
-    <IntDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
+    <OutDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
+    <IntDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
-    <IntDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
+    <OutDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
+    <IntDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
-    <IntDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
+    <OutDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
+    <IntDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
-    <IntDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
+    <OutDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
+    <IntDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
-    <IntDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
+    <OutDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
+    <IntDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
-    <IntDir>$(ProjectDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
+    <OutDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\util\</OutDir>
+    <IntDir>$(SystemVirtWorkspaceDir)..\..\sys\win_$(PlatformTarget)\$(Configuration)\.other\objects\$(ProjectName)\</IntDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -315,10 +323,32 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\.gitattributes" />
+    <None Include="..\..\.github\workflows\check_merge_to_master_and_develop.yml" />
     <None Include="..\..\.gitignore" />
     <None Include="..\..\.gitmodules" />
     <None Include="..\..\LICENSE" />
+    <None Include="..\..\prj\common\common_mkfl\flagsandsys_common.unix.Makefile" />
+    <None Include="..\..\prj\common\common_mkfl\flagsandsys_common.windows.Makefile" />
+    <None Include="..\..\prj\common\common_mkfl\flagsandsys_common_private.unix.Makefile" />
+    <None Include="..\..\prj\common\common_mkfl\flagsandsys_common_private.windows.Makefile" />
+    <None Include="..\..\prj\common\common_mkfl\raw\flagsandsys_common_private_raw.unix.Makefile" />
+    <None Include="..\..\prj\common\common_mkfl\raw\flagsandsys_common_private_raw.windows.Makefile" />
+    <None Include="..\..\prj\common\common_mkfl\raw\flagsandsys_common_raw.unix.Makefile" />
+    <None Include="..\..\prj\common\common_mkfl\raw\flagsandsys_common_raw.windows.Makefile" />
+    <None Include="..\..\prj\common\common_qt\flagsandsys_common.pri" />
+    <None Include="..\..\prj\common\common_qt\flagsandsys_common_private.pri" />
     <None Include="..\..\README.md" />
+    <None Include="..\..\scripts\unix_build_all.sh" />
+    <None Include="..\..\scripts\unix_prepare_host.sh" />
+    <None Include="..\..\scripts\unix_prepare_repository.sh" />
+    <None Include="..\..\scripts\unix_run_tests.sh" />
+    <None Include="..\..\scripts\windows_build_all.bat" />
+    <None Include="..\..\scripts\windows_prepare_host.bat" />
+    <None Include="..\..\scripts\windows_prepare_repository.bat" />
+    <None Include="..\..\scripts\windows_run_tests.bat" />
+    <None Include="..\..\scripts\windows_set_vs_toolset_and_run.bat" />
+    <None Include="..\system_all_mkfl\system_all.unix.Makefile" />
+    <None Include="..\system_all_qt\system_all.pro" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

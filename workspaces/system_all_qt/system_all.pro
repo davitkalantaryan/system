@@ -1,37 +1,36 @@
+#
+# file:			system_all.pro
+# path:			workspaces/system_all_qt/system_all.pro
+# created on:		2023 Aug 31
+# Created by:		Davit Kalantaryan (davit.kalantaryan@desy.de)
+#
 
+message("!!! $${_PRO_FILE_}")
 
 TEMPLATE = subdirs
 #CONFIG += ordered
 
-repositoryRoot = $${PWD}/../..
+include ( "$${PWD}/../../prj/common/common_qt/flagsandsys_common.pri" )
 
-include ( "$${repositoryRoot}/prj/common/common_qt/sys_common.pri" )
+SUBDIRS		+=	"$${systemRepositoryRoot}/prj/tests/create_exe_test_qt/create_exe_test.pro"
+SUBDIRS		+=	"$${systemRepositoryRoot}/prj/tests/any_quick_test_qt/any_quick_test.pro"
+SUBDIRS		+=	"$${systemRepositoryRoot}/prj/tests/system_unit_test_mult/system_unit_test.pro"
 
-SUBDIRS		+=	"$${repositoryRoot}/prj/tests/create_exe_test_qt/create_exe_test.pro"
+cinternalFromHere{
+        SUBDIRS	+= "$${cinternalRepoRoot}/workspaces/cinternal_all_qt/cinternal_all.pro"
+}
 
-UNIX_SCRIPTS	= $$cpputilsFindFilesRecursive($${repositoryRoot}/scripts, .sh)
-WINDOWS_SCRIPTS	= $$cpputilsFindFilesRecursive($${repositoryRoot}/scripts, .bat)
-MDS_IN_DOCS	= $$cpputilsFindFilesRecursive($${repositoryRoot}/docs, .md)
-TXT_IN_DOCS	= $$cpputilsFindFilesRecursive($${repositoryRoot}/docs, .txt)
-#YML_GH_WORKS	= $$cpputilsFindFilesRecursive($${repositoryRoot}/.github, .yml)
-#YML_GL_WORKS	= $$cpputilsFindFilesRecursive($${repositoryRoot}/.gitlab, .yml)
 
-OTHER_FILES += $$UNIX_SCRIPTS
-OTHER_FILES += $$WINDOWS_SCRIPTS
-OTHER_FILES += $$MDS_IN_DOCS
-OTHER_FILES += $$TXT_IN_DOCS
-OTHER_FILES += $$YML_GH_WORKS
-OTHER_FILES += $$YML_GL_WORKS
+greaterThan(QT_MAJOR_VERSION, 4):QT += widgets
+
+OTHER_FILES += $$files($${systemRepositoryRoot}/docs/*.md,true)
+OTHER_FILES += $$files($${systemRepositoryRoot}/docs/*.txt,true)
+OTHER_FILES += $$files($${systemRepositoryRoot}/scripts/*.sh,true)
+OTHER_FILES += $$files($${systemRepositoryRoot}/scripts/*.bat,true)
+OTHER_FILES += $$files($${systemRepositoryRoot}/.github/*.yml,true)
 
 OTHER_FILES	+=	\
-	"$${repositoryRoot}/.gitattributes"					\
-	"$${repositoryRoot}/.gitignore"						\
-	"$${repositoryRoot}/.gitmodules"					\
-	"$${repositoryRoot}/LICENSE"						\
-	"$${repositoryRoot}/README.md"						\
-	\
-	"$${PWD}/../../scripts/findfiles_no_sp"					\
-	"$${PWD}/../../scripts/findfiles_sp"					\
-	\
-	"$${PWD}/../../prj/common/common_mkfl/unix.common.Makefile"		\
-	"$${PWD}/../../prj/common/common_mkfl/windows.common.Makefile"		\
+        $${systemRepositoryRoot}/.gitattributes		\
+	$${systemRepositoryRoot}/.gitignore			\
+	$${systemRepositoryRoot}/LICENSE			\
+	$${systemRepositoryRoot}/README.md

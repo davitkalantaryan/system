@@ -22,6 +22,9 @@
 
 CPPUTILS_BEGIN_C
 
+
+#include <cinternal/disable_compiler_warnings.h>
+
 #ifdef _WIN32
 
 #include <WinSock2.h>
@@ -49,6 +52,9 @@ SYSTEM_EXPORT int sys_dprintf(HANDLE a_file, const char* a_cpcFormat, ...);
 typedef void* LibHandleType;
 
 #endif  // #ifdef _WIN32
+
+
+#include <cinternal/undisable_compiler_warnings.h>
 
 
 CPPUTILS_END_C
