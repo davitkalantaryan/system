@@ -20,8 +20,9 @@
 #include <cinternal/undisable_compiler_warnings.h>
 
 
-// #define SYMBOL_NAME_TO_FIND     "OPENSSL_init_ssl" // works (for OpenSSL_add_all_algorithms)
-// #define SYMBOL_NAME_TO_FIND     "OPENSSL_init_crypto" // works (for ERR_load_crypto_strings)
+// #define SYMBOL_NAME_TO_FIND     "OPENSSL_init_ssl" // works (for OpenSSL_add_all_algorithms) if version is >= 0x10100000L
+// #define SYMBOL_NAME_TO_FIND     "SSL_library_init"
+#define SYMBOL_NAME_TO_FIND     "OPENSSL_init_crypto" // works (for ERR_load_crypto_strings)
 // #define SYMBOL_NAME_TO_FIND     "BIO_new_mem_buf" // works
 // #define SYMBOL_NAME_TO_FIND     "PEM_read_bio_PrivateKey" // works
 // #define SYMBOL_NAME_TO_FIND     "EVP_PKEY_new"  // works
@@ -34,7 +35,7 @@
 // #define SYMBOL_NAME_TO_FIND     "EVP_DigestVerifyFinal" // works
 // #define SYMBOL_NAME_TO_FIND     "EVP_MD_CTX_free" // works
 // #define SYMBOL_NAME_TO_FIND     "EVP_PKEY_free" // works
-#define SYMBOL_NAME_TO_FIND     "BIO_free" // works
+// #define SYMBOL_NAME_TO_FIND     "BIO_free" // works
 // #define SYMBOL_NAME_TO_FIND     "ERR_free_strings" // this is just a macro
 
 int main(int a_argc, char* a_argv[])

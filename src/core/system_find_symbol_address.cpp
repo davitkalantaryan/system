@@ -59,13 +59,84 @@ SYSTEM_EXPORT void* SystemFindSymbolAddress(const char* CPPUTILS_ARG_NN a_symbol
 CPPUTILS_END_C
 
 
-#else
+#elif defined(__APPLE__)
 
 
 CPPUTILS_BEGIN_C
 
 
 
+
+
+CPPUTILS_END_C
+
+
+#else
+
+
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+#include <link.h>
+#include <QDebug>
+
+
+CPPUTILS_BEGIN_C
+
+
+#define SYSTEM_USE_ITERATE
+
+
+#ifdef SYSTEM_USE_ITERATE
+
+static int FindFunctionStatic(struct dl_phdr_info* a_info, size_t a_size, void* a_data) CPPUTILS_NOEXCEPT;
+
+struct SystemClbStruct01{
+    const char* functionName;
+    void*       funcAddress;
+};
+
+
+#endif
+
+
+SYSTEM_EXPORT void* SystemFindSymbolAddress(const char* CPPUTILS_ARG_NN a_symbolLookupName) CPPUTILS_NOEXCEPT
+{
+    
+#ifdef SYSTEM_USE_ITERATE
+
+    struct SystemClbStruct01 clbkData = {a_symbolLookupName,CPPUTILS_NULL};
+    dl_iterate_phdr(&FindFunctionStatic, &clbkData);
+    return clbkData.funcAddress;
+    
+#else 
+    
+    void* const pRet = dlsym(RTLD_DEFAULT,a_symbolLookupName);
+    return pRet;
+    
+#endif
+    
+}
+
+#ifdef SYSTEM_USE_ITERATE
+
+static int FindFunctionStatic(struct dl_phdr_info* a_info, size_t a_size, void* a_data) CPPUTILS_NOEXCEPT
+{
+    struct SystemClbStruct01* const clbkData_p = (struct SystemClbStruct01*)a_data;
+    void* const handle = dlopen(a_info->dlpi_name, RTLD_NOW);
+    CPPUTILS_STATIC_CAST(void,a_size);
+    if (handle) {
+        clbkData_p->funcAddress = dlsym(handle, clbkData_p->functionName);
+        if (clbkData_p->funcAddress) {
+            dlclose(handle);
+            return 1; // Stop iterating
+        }
+        dlclose(handle);
+    }
+    return 0; // Continue iterating
+}
+
+#endif
 
 
 CPPUTILS_END_C
