@@ -13,7 +13,7 @@ message("!!! $${PWD}/flagsandsys_common_private.pri")
 isEmpty(systemPrivateFlagsAndSysCommonIncluded){
     systemPrivateFlagsAndSysCommonIncluded = 1
 
-	include("$${PWD}/flagsandsys_common.pri")
+    include("$${PWD}/flagsandsys_common.pri")
 
     INCLUDEPATH += $${systemRepositoryRoot}/src/include
 }
