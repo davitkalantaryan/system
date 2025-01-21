@@ -25,7 +25,7 @@ isEmpty(systemFlagsAndSysCommonIncluded){
     include("$${systemRepositoryRoot}/contrib/cinternal/prj/common/common_qt/flagsandsys_common.pri")
     SYSTEM_QT_INSTALL_PATH = $$[QT_INSTALL_PREFIX]
     SYSTEM_QT_INSTALL_DIR = $$dirname(SYSTEM_QT_INSTALL_PATH)
-    message("SYSTEM_QT_INSTALL_PATH: $${SYSTEM_QT_INSTALL_DIR}")
+    message("SYSTEM_QT_INSTALL_DIR: $${SYSTEM_QT_INSTALL_DIR}")
 
     INCLUDEPATH += $${systemRepositoryRoot}/include
 

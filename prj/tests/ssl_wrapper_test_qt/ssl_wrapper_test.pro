@@ -21,15 +21,18 @@ DEFINES += CPPUTILS_DO_NOT_USE_STD_FUNCTION
 
 win32{
 	LIBS += -lWs2_32
+        # INCLUDEPATH += "C:\Program Files\OpenSSL-Win64\include"
 } else {
 	LIBS += -pthread
 	LIBS += -ldl
 }
 
-INCLUDEPATH += $${SYSTEM_QT_INSTALL_PATH}/Src/qtwebengine/src/3rdparty/chromium/third_party/boringssl/src/include
+INCLUDEPATH += $${SYSTEM_QT_INSTALL_DIR}/Src/qtwebengine/src/3rdparty/chromium/third_party/boringssl/src/include
 
 QMAKE_CXXFLAGS -= $${CinternalStrongWarings}
 QMAKE_CFLAGS -= $${CinternalStrongWarings}
+
+DEFINES += SYSTEM_SSL_WRAPPER_EXISTS
 
 # SOURCES += $$files($${PWD}/../../../src/core/*.c,true)
 # SOURCES += $$files($${PWD}/../../../src/core/*.cpp,true)
@@ -37,6 +40,7 @@ QMAKE_CFLAGS -= $${CinternalStrongWarings}
 SOURCES	+=		\
         "$${systemRepositoryRoot}/src/tests/main_ssl_wrapper_test.cpp"  \
         "$${systemRepositoryRoot}/src/core/system_find_symbol_address.cpp"  \
+        "$${systemRepositoryRoot}/src/core/system_ssl_wrapper.cpp"  \
         "$${cinternalRepoRoot}/src/core/cinternal_core_logger.c"
 
 HEADERS += $$files($${systemRepositoryRoot}/include/*.h,true)

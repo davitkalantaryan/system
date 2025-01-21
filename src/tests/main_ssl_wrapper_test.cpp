@@ -6,7 +6,7 @@
 //
 
 
-#include <system/find_symbol_address.h>
+#include <system/ssl_wrapper.h>
 #include <cinternal/disable_compiler_warnings.h>
 #include <stdio.h>
 #include <QCoreApplication>
@@ -17,51 +17,18 @@
 #include <QDebug>
 #include <QTimer>
 #include <QSslSocket>
+#include <QByteArray>
 #include <cinternal/undisable_compiler_warnings.h>
 
 
-// #define SYMBOL_NAME_TO_FIND     "OPENSSL_init_ssl" // works (for OpenSSL_add_all_algorithms) if version is >= 0x10100000L
-// #define SYMBOL_NAME_TO_FIND     "SSL_library_init"
-#define SYMBOL_NAME_TO_FIND     "OPENSSL_init_crypto" // works (for ERR_load_crypto_strings)
-// #define SYMBOL_NAME_TO_FIND     "BIO_new_mem_buf" // works
-// #define SYMBOL_NAME_TO_FIND     "PEM_read_bio_PrivateKey" // works
-// #define SYMBOL_NAME_TO_FIND     "EVP_PKEY_new"  // works
-// #define SYMBOL_NAME_TO_FIND     "EVP_PKEY_assign" // works (for EVP_PKEY_assign_RSA)
-// #define SYMBOL_NAME_TO_FIND     "EVP_MD_CTX_new"  // works
-// #define SYMBOL_NAME_TO_FIND     "EVP_PKEY_free"  // works
-// #define SYMBOL_NAME_TO_FIND     "BIO_free" // works
-// #define SYMBOL_NAME_TO_FIND     "EVP_DigestVerifyInit" // works
-// #define SYMBOL_NAME_TO_FIND     "EVP_DigestVerifyUpdate" // works
-// #define SYMBOL_NAME_TO_FIND     "EVP_DigestVerifyFinal" // works
-// #define SYMBOL_NAME_TO_FIND     "EVP_MD_CTX_free" // works
-// #define SYMBOL_NAME_TO_FIND     "EVP_PKEY_free" // works
-// #define SYMBOL_NAME_TO_FIND     "BIO_free" // works
-// #define SYMBOL_NAME_TO_FIND     "ERR_free_strings" // this is just a macro
+static void CallSslFunctions(void);
+
 
 int main(int a_argc, char* a_argv[])
 {
-    void* pFuncAddress;
-
-    pFuncAddress = SystemFindSymbolAddress(SYMBOL_NAME_TO_FIND);
-    qDebug()<<"1. pFuncAddress: "<<pFuncAddress;
-
     QCoreApplication aApp(a_argc, a_argv);
 
-    if (!QSslSocket::supportsSsl()) {
-        qDebug() << "OpenSSL is not available!";
-    } else {
-        qDebug() << "OpenSSL is available.";
-        // Optionally print available ciphers to verify initialization
-        qDebug() << "Supported ciphers:" ;
-    }
-
-    pFuncAddress = SystemFindSymbolAddress(SYMBOL_NAME_TO_FIND);
-    qDebug()<<"2. pFuncAddress: "<<pFuncAddress;
-
     QNetworkAccessManager manager;
-
-    pFuncAddress = SystemFindSymbolAddress(SYMBOL_NAME_TO_FIND);
-    qDebug()<<"3. pFuncAddress: "<<pFuncAddress;
 
     // URL to fetch data from
     QUrl url("https://jsonplaceholder.typicode.com/posts/1"); // Example URL
@@ -81,15 +48,99 @@ int main(int a_argc, char* a_argv[])
         }
         reply->deleteLater(); // Clean up
 
-        void* pFuncAddress = SystemFindSymbolAddress(SYMBOL_NAME_TO_FIND);
-        qDebug()<<"4. pFuncAddress: "<<pFuncAddress;
+        //void* pFuncAddress = SystemFindSymbolAddress(SYMBOL_NAME_TO_FIND);
+        //qDebug()<<"4. pFuncAddress: "<<pFuncAddress;
+        CallSslFunctions();
     });
-
-    qDebug()<<"5. pFuncAddress: "<<pFuncAddress;
-
 
     aApp.exec();
 
 
 	return 0;
+}
+
+
+static void CallSslFunctions(void)
+{
+    static const char* sccpFocustCapPublicKey =
+        "-----BEGIN PUBLIC KEY-----\r\n"
+        "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7kPhpKxqKYtlYCbJJ+QU\r\n"
+        "+qtLeFmTHAkLhb5s3yZ1cHzy5viK7GcJ+y5Grbu6CW2VI7EvrUzrnEzlyAs5GRrE\r\n"
+        "qSMS72V6zH871l6lUkWdKi8E1rACfEJN6k4pV6pzZQ8oAcRvNYEM43lmwQen6ySo\r\n"
+        "EQotmLaKaQJWY46g6ktOPMZjzAF7q5UPWk/6pv1B3Xy+MtQ2bDjiLXvqbZrO+GdE\r\n"
+        "upZE8PU1+H9/Q52jeHtmJWDGf/xGmVfykoVwACnj7v5rgJR6K6CRFshba12Yuw2a\r\n"
+        "2CnRzCJO3t3kauwLEaCIw6aFwj3ilQ4e7919xFhmo2lib1Wbhu+ej6ZSKRT8ibHO\r\n"
+        "rwIDAQAB\r\n"
+        "-----END PUBLIC KEY-----";
+
+    int nCallRet;
+    const QByteArray publicKeyContent = QByteArray(sccpFocustCapPublicKey);
+
+    const QByteArray dataContent = "";
+    const QByteArray signatureContent = "";
+
+    nCallRet = System_sslwrap_InitializeFunctions();
+    if(nCallRet){
+        qCritical()<<"System_sslwrap_InitializeFunctions failed";
+        return;
+    }
+
+    nCallRet = System_sslwrap_OPENSSL_init_ssl(0,CPPUTILS_NULL);
+    if(!nCallRet){
+        qCritical()<<"System_sslwrap_OPENSSL_init_ssl failed";
+        return;
+    }
+
+    BIO* const bio = System_sslwrap_BIO_new_mem_buf(publicKeyContent.data(), (int)publicKeyContent.size());
+    if (!bio) {
+        System_sslwrap_OPENSSL_cleanup();
+        qCritical("Failed to create BIO for public key.");
+        return;
+    }
+
+    RSA* const rsa = System_sslwrap_PEM_read_bio_RSA_PUBKEY(bio, nullptr, nullptr, nullptr);
+    if (!rsa) {
+        qCritical("Failed to load RSA public key.");
+        System_sslwrap_BIO_free(bio);
+        System_sslwrap_OPENSSL_cleanup();
+        return;
+    }
+
+    EVP_PKEY* const evp_key = System_sslwrap_EVP_PKEY_new();
+    if (!evp_key) {
+        qCritical("System_sslwrap_EVP_PKEY_new failed");
+        System_sslwrap_BIO_free(bio);
+        System_sslwrap_OPENSSL_cleanup();
+        return;
+    }
+
+    System_sslwrap_EVP_PKEY_assign_RSA(evp_key, rsa);
+
+    EVP_MD_CTX* const mdctx = System_sslwrap_EVP_MD_CTX_new();
+    if (!mdctx) {
+        qCritical("System_sslwrap_EVP_MD_CTX_new failed");
+        System_sslwrap_EVP_PKEY_free(evp_key);
+        System_sslwrap_BIO_free(bio);
+        System_sslwrap_OPENSSL_cleanup();
+        return;
+    }
+
+    if (System_sslwrap_EVP_DigestVerifyInit(mdctx, nullptr, System_sslwrap_EVP_sha256(), nullptr, evp_key) <= 0) {
+        qCritical("EVP_DigestVerifyInit failed.");
+    } else if (System_sslwrap_EVP_DigestVerifyUpdate(mdctx, dataContent.data(), dataContent.size()) <= 0) {
+        qCritical("EVP_DigestVerifyUpdate failed.");
+    } else {
+        int rc = System_sslwrap_EVP_DigestVerifyFinal(mdctx, reinterpret_cast<const unsigned char*>(signatureContent.data()), signatureContent.size());
+        if (rc == 1) {
+            //returnJsonObj["has_error"] = 0; // Signature is valid
+        } else if (rc == 0) {
+        } else {
+            qCritical("Error during EVP_DigestVerifyFinal.");
+        }
+    }
+
+    // cleaning up
+    System_sslwrap_EVP_PKEY_free(evp_key);
+    System_sslwrap_BIO_free(bio);
+    System_sslwrap_OPENSSL_cleanup();
 }
