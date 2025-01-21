@@ -107,8 +107,9 @@ CPPUTILS_END_C
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
+#include <cinternal/disable_compiler_warnings.h>
 #include <link.h>
-#include <QDebug>
+#include <cinternal/undisable_compiler_warnings.h>
 
 
 CPPUTILS_BEGIN_C
