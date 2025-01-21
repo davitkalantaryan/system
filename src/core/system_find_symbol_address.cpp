@@ -61,10 +61,40 @@ CPPUTILS_END_C
 
 #elif defined(__APPLE__)
 
+#include <cinternal/disable_compiler_warnings.h>
+#include <stdint.h>
+#include <dlfcn.h>
+#include <mach-o/dyld.h>
+#include <cinternal/undisable_compiler_warnings.h>
+
 
 CPPUTILS_BEGIN_C
 
 
+SYSTEM_EXPORT void* SystemFindSymbolAddress(const char* CPPUTILS_ARG_NN a_symbolLookupName) CPPUTILS_NOEXCEPT
+{
+    void *handle, *function;
+    const char *imageName;
+    uint32_t i;
+    const uint32_t libsCount = _dyld_image_count();
+
+    for (i = 0; i < libsCount; ++i) {
+        imageName = _dyld_get_image_name(i);
+        if (imageName) {
+            handle = dlopen(imageName, RTLD_NOW);
+            if (handle) {
+                function = dlsym(handle, a_symbolLookupName);
+                if (function) {
+                    dlclose(handle);
+                    return function;
+                }
+                dlclose(handle);
+            }  //  if (handle) {
+        }  //  if (imageName) {
+    }  //  for (i = 0; i < libsCount; ++i) {
+
+    return CPPUTILS_NULL;
+}
 
 
 
