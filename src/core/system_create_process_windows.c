@@ -10,9 +10,9 @@
 #ifdef _WIN32
 
 #include <system/create_process.h>
+#include <cinternal/disable_compiler_warnings.h>
 #include <stdlib.h>
 #include <string.h>
-#include <cinternal/disable_compiler_warnings.h>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <Windows.h>

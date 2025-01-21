@@ -22,5 +22,9 @@
 #endif
 #endif
 
+#ifdef _MSC_VER
+#pragma warning (disable:4820) //  'systemN::exe::parent::SHandle': '4' bytes padding added
+#endif
+
 
 #endif  // #ifndef SYSTEM_INCLUDE_SYSTEM_EXPORT_SYMBOLS_H

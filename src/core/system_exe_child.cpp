@@ -9,22 +9,22 @@
 #include <system/exe/child.hpp>
 #include <system/rw.hpp>
 #include <private/system/exe_parent_child_common.h>
+#include <cinternal/wrapper.h>
+#include <cinternal/disable_compiler_warnings.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef _MSC_VER
-#ifdef snprintf
-#undef snprintf
-#endif
-#define snprintf(_buf,_bufSize,...)		_snprintf_s((_buf),(_bufSize),(_bufSize),__VA_ARGS__)
-#pragma warning (disable:4996)
-#endif
 #ifdef _WIN32
 #define CLOSEDPIPE2	CPPUTILS_NULL
 #else
 #define	CloseHandle	close
 #define CLOSEDPIPE2	-1
+#endif
+#include <cinternal/undisable_compiler_warnings.h>
+
+#ifdef _MSC_VER
+#pragma warning (disable:4996) //  'systemN::exe::parent::SHandle': '4' bytes padding added
 #endif
 
 #define ATTR_CONSTRUCTOR2       
@@ -133,7 +133,7 @@ static void InitializeCommunicationWithParent(void)
 		}
 
 		for (i = 0; i < s_nNumberOfDataPipesToParent;++i) {
-			snprintf(vcBuffer,1023, COMMON_SYSTEM_EXE_DATAPIPE_TO_PARENT_F,int(i));
+			CinternalWrapperSnprintf(vcBuffer,1023, COMMON_SYSTEM_EXE_DATAPIPE_TO_PARENT_F,int(i));
 			pcPipeString = getenv(vcBuffer);
             if(pcPipeString){ s_pnDataPipeToParent[i] = HANDLE_CAST2(handle_t,strtoll(pcPipeString, CPPUTILS_NULL, 10)); }
 		}
@@ -148,7 +148,7 @@ static void InitializeCommunicationWithParent(void)
 		}
 
 		for (i = 0; i < s_nNumberOfDataPipesFromParent;++i) {
-			snprintf(vcBuffer,1023, COMMON_SYSTEM_EXE_DATAPIPE_FROM_PARENT_F,int(i));
+			CinternalWrapperSnprintf(vcBuffer,1023, COMMON_SYSTEM_EXE_DATAPIPE_FROM_PARENT_F,int(i));
 			pcPipeString = getenv(vcBuffer);
             if(pcPipeString){ s_pnDataPipeFromParent[i] = HANDLE_CAST2(handle_t,strtoll(pcPipeString, CPPUTILS_NULL, 10)); }
 		}

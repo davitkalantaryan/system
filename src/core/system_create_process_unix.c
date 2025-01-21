@@ -9,12 +9,14 @@
 
 #ifndef _WIN32
 
+#include <cinternal/disable_compiler_warnings.h>
 #include <system/create_process.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <cinternal/undisable_compiler_warnings.h>
 
 #define SYSTEM_INIT_NUMBER_OF_CMD_LINE_ARGUMENTS     128
 

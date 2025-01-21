@@ -43,6 +43,7 @@
     <ClCompile Include="..\..\..\src\core\system_exe_child.cpp" />
     <ClCompile Include="..\..\..\src\core\system_exe_parent_unix.cpp" />
     <ClCompile Include="..\..\..\src\core\system_exe_parent_windows.cpp" />
+    <ClCompile Include="..\..\..\src\core\system_find_symbol_address.cpp" />
     <ClCompile Include="..\..\..\src\core\system_handlelib.cpp" />
     <ClCompile Include="..\..\..\src\core\system_rw.cpp" />
     <ClCompile Include="..\..\..\src\core\system_specific_unix.cpp" />
@@ -55,8 +56,10 @@
     <ClInclude Include="..\..\..\include\system\exe\parent.hpp" />
     <ClInclude Include="..\..\..\include\system\exe\parent_child_common.hpp" />
     <ClInclude Include="..\..\..\include\system\export_symbols.h" />
+    <ClInclude Include="..\..\..\include\system\find_symbol_address.h" />
     <ClInclude Include="..\..\..\include\system\handlelib.hpp" />
     <ClInclude Include="..\..\..\include\system\rw.hpp" />
+    <ClInclude Include="..\..\..\include\system\ssl_wrapper.h" />
     <ClInclude Include="..\..\..\include\system\system_specific_definations.h" />
     <ClInclude Include="..\..\..\src\core\system_include_private.hpp" />
   </ItemGroup>

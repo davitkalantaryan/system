@@ -8,6 +8,12 @@
 
 #include <cinternal/disable_compiler_warnings.h>
 #include <stdio.h>
+#include <cinternal/undisable_compiler_warnings.h>
+
+
+#ifdef _MSC_VER
+#pragma warning (disable:4710)  //  'printf': function not inlined
+#endif
 
 
 int main(void)

@@ -10,21 +10,23 @@
 
 #ifdef _WIN32
 
+#ifdef _MSC_VER
+#pragma warning (push)
+#pragma warning (disable:4365)
+#endif
+
+#include <cinternal/disable_compiler_warnings.h>
 #include <system/exe/parent.hpp>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include "system_include_private.hpp"
 #include <private/system/exe_parent_child_common.h>
-
-
-#ifdef _MSC_VER
-#pragma warning (push)
-#pragma warning (disable:4365)
-#endif
 #include <iostream>
 #include <mutex>
 #include <string>
+#include <cinternal/undisable_compiler_warnings.h>
+
 #ifdef _MSC_VER
 #pragma warning (pop)
 #endif

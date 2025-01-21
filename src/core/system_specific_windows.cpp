@@ -14,8 +14,10 @@
 
 
 #include <system/system_specific_definations.h>
+#include <cinternal/disable_compiler_warnings.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <cinternal/undisable_compiler_warnings.h>
 
 #define BUFFER_SIZE_MIN1_FOR_SPRINTF		4093
 

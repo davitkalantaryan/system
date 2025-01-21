@@ -10,20 +10,18 @@
 #define SYSTEM_SPECIFIC_DEFINATIONS_H
 
 #ifdef _MSC_VER
-#define strdup	_strdup
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-//#pragma warning(disable:4244)//TLeaf.h(121,72): warning C4244: 'return': conversion from 'Double_t' to 'Long64_t', possible loss of data
 #endif
 
 #include <system/export_symbols.h>
-#include <stddef.h>
 
 CPPUTILS_BEGIN_C
 
 
 #include <cinternal/disable_compiler_warnings.h>
+#include <stddef.h>
 
 #ifdef _WIN32
 

@@ -26,6 +26,8 @@ win32{
 	LIBS += -ldl
 }
 
+INCLUDEPATH += $${SYSTEM_QT_INSTALL_PATH}/Src/qtwebengine/src/3rdparty/chromium/third_party/boringssl/src/include
+
 QMAKE_CXXFLAGS -= $${CinternalStrongWarings}
 QMAKE_CFLAGS -= $${CinternalStrongWarings}
 
