@@ -19,6 +19,7 @@
 #include <QSslSocket>
 #include <QByteArray>
 #include <QFile>
+#include <QEventLoop>
 #include <cinternal/undisable_compiler_warnings.h>
 
 
@@ -197,8 +198,26 @@ static int ForceLoadSslLibraries(void)
     if (QSslSocket::supportsSsl()) {
         qDebug() << "SSL Library Version:" << QSslSocket::sslLibraryVersionString();
         qDebug() << "SSL Library Build Version:" << QSslSocket::sslLibraryBuildVersionString();
+
+        QNetworkAccessManager manager;
+        const QUrl url("https://google.com");
+        QNetworkRequest request(url);
+        QNetworkReply* const reply = manager.get(request);
+        QEventLoop loopUntilDone;
+        bool resultNotReady = true;
+        QObject::connect(reply, &QNetworkReply::finished, &manager, [&reply,&loopUntilDone,&resultNotReady]() {
+            resultNotReady = false;
+            loopUntilDone.quit();
+            reply->deleteLater(); // Clean up
+        });
+        if(resultNotReady){
+            loopUntilDone.exec();
+        }
+
         return 0;
     }
+
+
 
     return 1;
 }
