@@ -11,11 +11,12 @@
 
 
 #include <system/export_symbols.h>
+
+#ifdef SYSTEM_SSL_WRAPPER_EXISTS
+
 #include <cinternal/disable_compiler_warnings.h>
 #include <openssl/ssl.h>
 #include <cinternal/undisable_compiler_warnings.h>
-
-#ifdef SYSTEM_SSL_WRAPPER_EXISTS
 
 CPPUTILS_BEGIN_C
 
