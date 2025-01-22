@@ -56,33 +56,7 @@ int main(int a_argc, char* a_argv[])
         qDebug()<<"signature verified";
     }
 
-    //QNetworkAccessManager manager;
-
-    //// URL to fetch data from
-    //QUrl url("https://jsonplaceholder.typicode.com/posts/1"); // Example URL
-    //QNetworkRequest request(url);
-
-    //// Send GET request
-    //QNetworkReply *reply = manager.get(request);
-
-    //// Connect the reply finished signal to handleNetworkReply
-    //QObject::connect(reply, &QNetworkReply::finished, &aApp, [&reply]() {
-    //    if (reply->error() == QNetworkReply::NoError) {
-    //        // Print the data received from the URL
-    //        //qDebug() << "Response:" << reply->readAll();
-    //    } else {
-    //        // Print the error if any
-    //        qDebug() << "Error:" << reply->errorString();
-    //    }
-    //    reply->deleteLater(); // Clean up
-
-    //    //void* pFuncAddress = SystemFindSymbolAddress(SYMBOL_NAME_TO_FIND);
-    //    //qDebug()<<"4. pFuncAddress: "<<pFuncAddress;
-    //    CallSslFunctions();
-    //});
-
     //aApp.exec();
-
 
 	return 0;
 }
