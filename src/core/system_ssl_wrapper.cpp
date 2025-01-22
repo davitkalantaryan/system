@@ -37,6 +37,7 @@ typedef int             (*Type_System_sslwrap_EVP_DigestUpdate)(EVP_MD_CTX*, con
 typedef int             (*Type_System_sslwrap_EVP_DigestVerifyFinal)(EVP_MD_CTX*, const unsigned char*, size_t);
 typedef const EVP_MD*   (*Type_System_sslwrap_EVP_sha256)(void);
 typedef void            (*Type_System_sslwrap_EVP_MD_CTX_free)(EVP_MD_CTX*);
+typedef int             (*Type_System_sslwrap_BIO_read)(BIO*, void*, int);
 
 
 static Type_System_sslwrap_OPENSSL_init_ssl         s_System_sslwrap_OPENSSL_init_ssl = CPPUTILS_NULL;
@@ -53,6 +54,7 @@ static Type_System_sslwrap_EVP_DigestUpdate         s_System_sslwrap_EVP_DigestU
 static Type_System_sslwrap_EVP_DigestVerifyFinal    s_System_sslwrap_EVP_DigestVerifyFinal = CPPUTILS_NULL;
 static Type_System_sslwrap_EVP_sha256               s_System_sslwrap_EVP_sha256 = CPPUTILS_NULL;
 static Type_System_sslwrap_EVP_MD_CTX_free          s_System_sslwrap_EVP_MD_CTX_free = CPPUTILS_NULL;
+static Type_System_sslwrap_BIO_read                 s_System_sslwrap_BIO_read = CPPUTILS_NULL;
 
 
 SYSTEM_EXPORT int System_sslwrap_InitializeFunctions(void) CPPUTILS_NOEXCEPT
@@ -129,6 +131,11 @@ SYSTEM_EXPORT int System_sslwrap_InitializeFunctions(void) CPPUTILS_NOEXCEPT
         return 1;
     }
 
+    s_System_sslwrap_BIO_read = (Type_System_sslwrap_BIO_read)SystemFindSymbolAddress("BIO_read");
+    if(!s_System_sslwrap_BIO_read){
+        return 1;
+    }
+
     return 0;
 }
 
@@ -162,26 +169,23 @@ long System_sslwrap_BIO_get_mem_data(BIO* a_bp, char** a_pemData) {
         return -1; // Invalid input
     }
 
-    // Get the length of data in the BIO
-    long bioLength = BIO_pending(a_bp);
-    if (bioLength <= 0) {
-        return -1; // No data to read
-    }
-
-    // Allocate a buffer and read data from the BIO
-    *a_pemData = static_cast<char*>(malloc(bioLength));
-    if (!*a_pemData) {
+    // Estimate the size of the BIO buffer (using a sufficiently large buffer)
+    constexpr size_t bufferSize = 8192; // Adjust based on expected input size
+    char* buffer = static_cast<char*>(malloc(bufferSize));
+    if (!buffer) {
         return -1; // Memory allocation failure
     }
 
-    long bytesRead = BIO_read(a_bp, *a_pemData, bioLength);
+    // Read data from BIO into the buffer
+    int bytesRead = BIO_read(a_bp, buffer, bufferSize);
     if (bytesRead <= 0) {
-        free(*a_pemData);
-        *a_pemData = nullptr;
-        return -1; // Read failure
+        free(buffer); // Cleanup in case of failure
+        return -1;    // Read failure or no data available
     }
 
-    return bytesRead; // Return the number of bytes read
+    // Assign the buffer to the output pointer and return the number of bytes read
+    *a_pemData = buffer;
+    return bytesRead;
 }
 #endif
 
@@ -194,6 +198,7 @@ SYSTEM_EXPORT RSA* System_sslwrap_PEM_read_bio_RSA_PUBKEY(BIO* a_bp, RSA** a_x, 
         return (*s_System_sslwrap_PEM_read_bio_RSA_PUBKEY)(a_bp,a_x,a_cb,a_u);
     }
 
+    // Use the custom BIO_get_mem_data equivalent
     char* pemData = nullptr;
     long pemLength = System_sslwrap_BIO_get_mem_data(a_bp, &pemData);
     if (pemLength <= 0 || !pemData) {
@@ -202,6 +207,7 @@ SYSTEM_EXPORT RSA* System_sslwrap_PEM_read_bio_RSA_PUBKEY(BIO* a_bp, RSA** a_x, 
 
     // Create CFDataRef from PEM data
     CFDataRef publicKeyData = CFDataCreate(nullptr, reinterpret_cast<const UInt8*>(pemData), pemLength);
+    free(pemData); // Free the buffer after creating CFDataRef
     if (!publicKeyData) {
         return nullptr; // Failed to create CFData
     }
@@ -289,6 +295,12 @@ SYSTEM_EXPORT const EVP_MD* System_sslwrap_EVP_sha256(void) CPPUTILS_NOEXCEPT
 SYSTEM_EXPORT void System_sslwrap_EVP_MD_CTX_free(EVP_MD_CTX* a_ctx) CPPUTILS_NOEXCEPT
 {
     (*s_System_sslwrap_EVP_MD_CTX_free)(a_ctx);
+}
+
+
+SYSTEM_EXPORT int System_sslwrap_BIO_read(BIO* a_bio, void* a_data, int a_len) CPPUTILS_NOEXCEPT
+{
+    return (*s_System_sslwrap_BIO_read)(a_bio,a_data,a_len);
 }
 
 
