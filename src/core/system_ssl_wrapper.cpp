@@ -12,6 +12,12 @@
 #ifdef SYSTEM_SSL_WRAPPER_EXISTS
 
 #include <system/find_symbol_address.h>
+#include <cinternal/disable_compiler_warnings.h>
+#ifdef __APPLE__
+#include <Security/Security.h>
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+#include <cinternal/undisable_compiler_warnings.h>
 
 
 CPPUTILS_BEGIN_C
@@ -150,6 +156,36 @@ SYSTEM_EXPORT BIO* System_sslwrap_BIO_new_mem_buf(const void* a_buf, int a_len) 
 }
 
 
+#ifdef __APPLE__
+long System_sslwrap_BIO_get_mem_data(BIO* a_bp, char** a_pemData) {
+    if (!a_bp || !a_pemData) {
+        return -1; // Invalid input
+    }
+
+    // Get the length of data in the BIO
+    long bioLength = BIO_pending(a_bp);
+    if (bioLength <= 0) {
+        return -1; // No data to read
+    }
+
+    // Allocate a buffer and read data from the BIO
+    *a_pemData = static_cast<char*>(malloc(bioLength));
+    if (!*a_pemData) {
+        return -1; // Memory allocation failure
+    }
+
+    long bytesRead = BIO_read(a_bp, *a_pemData, bioLength);
+    if (bytesRead <= 0) {
+        free(*a_pemData);
+        *a_pemData = nullptr;
+        return -1; // Read failure
+    }
+
+    return bytesRead; // Return the number of bytes read
+}
+#endif
+
+
 SYSTEM_EXPORT RSA* System_sslwrap_PEM_read_bio_RSA_PUBKEY(BIO* a_bp, RSA** a_x, pem_password_cb* a_cb, void* a_u) CPPUTILS_NOEXCEPT
 {
 #ifdef __APPLE__
@@ -159,7 +195,7 @@ SYSTEM_EXPORT RSA* System_sslwrap_PEM_read_bio_RSA_PUBKEY(BIO* a_bp, RSA** a_x, 
     }
 
     char* pemData = nullptr;
-    long pemLength = BIO_get_mem_data(a_bp, &pemData);
+    long pemLength = System_sslwrap_BIO_get_mem_data(a_bp, &pemData);
     if (pemLength <= 0 || !pemData) {
         return nullptr; // Failed to read from BIO
     }
