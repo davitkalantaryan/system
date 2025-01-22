@@ -177,6 +177,7 @@ static bool VerifySignature(const QString& a_dataFile, const QString& a_signatur
             //returnJsonObj["has_error"] = 0; // Signature is valid
             bRet = true;
         } else if (rc == 0) {
+            qWarning("Wrong signature.");
         } else {
             qCritical("Error during EVP_DigestVerifyFinal.");
         }
