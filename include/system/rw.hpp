@@ -11,21 +11,18 @@
 #ifndef SYSTEM_INCLUDE_SYSTEM_RW_HPP
 #define SYSTEM_INCLUDE_SYSTEM_RW_HPP
 
-#include <system/export_symbols.h>
-#include <stddef.h>
-#include <stdint.h>
 
 #ifdef _MSC_VER
 #pragma warning (push)
 #pragma warning (disable:4365)
 #endif
-#include <string>
-#ifdef _MSC_VER
-#pragma warning (pop)
-#endif
 
-#ifdef _WIN32
+#include <system/export_symbols.h>
 #include <cinternal/disable_compiler_warnings.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <string>
+#ifdef _WIN32
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <Windows.h>
@@ -38,6 +35,12 @@ typedef HANDLE		handle_t;
 typedef ssize_t		sssize_t;
 typedef int			handle_t;
 #endif
+#include <cinternal/undisable_compiler_warnings.h>
+
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif
+
 typedef int16_t		pindex_t;
 typedef handle_t* (*HandleGetterType)(void*, pindex_t);
 typedef sssize_t (*WaitFunctionType)(void*, int timeoutMs);

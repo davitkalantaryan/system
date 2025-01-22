@@ -13,6 +13,7 @@
 #include <system/exe/parent_child_common.hpp>
 #include <private/system/exe_parent_child_common.h>
 #include "system_include_private.hpp"
+#include <cinternal/disable_compiler_warnings.h>
 #include <string.h> // we hope that strcspn is rejecting case
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +22,7 @@
 #include <signal.h>
 #include <alloca.h>
 #include <string>
+#include <cinternal/undisable_compiler_warnings.h>
 
 #ifndef SleepEx
 #define SleepEx(_x,_alrt)   usleep(1000*(_x))

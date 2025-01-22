@@ -75,6 +75,9 @@
     <ClCompile Include="..\..\..\src\core\system_specific_windows.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\core\system_find_symbol_address.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\core\system_include_private.hpp">
@@ -103,6 +106,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\system\exe\parent_child_common.hpp">
       <Filter>Header Files\incude\system\exe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\system\find_symbol_address.h">
+      <Filter>Header Files\incude\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\system\ssl_wrapper.h">
+      <Filter>Header Files\incude\system</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

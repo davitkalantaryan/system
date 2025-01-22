@@ -9,7 +9,9 @@
 #ifndef COMMON_SYSTEM_HANDLELIB_HPP
 #define COMMON_SYSTEM_HANDLELIB_HPP
 
+#include <cinternal/disable_compiler_warnings.h>
 #include <stddef.h>
+#include <cinternal/undisable_compiler_warnings.h>
 
 
 namespace common{ namespace system {

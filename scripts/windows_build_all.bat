@@ -12,7 +12,8 @@ setlocal EnableDelayedExpansion
 :: here we define default platformtarget to build, platforms are following
 :: other platforms should be provided as first argument
 :: ARM, ARM64, x86, x64
-set PlatformTarget=ARM,ARM64,x86,x64
+:: set PlatformTarget=ARM,ARM64,x86,x64
+set PlatformTarget=ARM64,x86,x64
 set Configuration=Debug,Release
 set ActionConfirm=Build
 

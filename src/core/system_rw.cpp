@@ -7,15 +7,22 @@
 //
 
 #include <system/rw.hpp>
+#include <cinternal/disable_compiler_warnings.h>
 #include <vector>
 #include <utility>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <cinternal/undisable_compiler_warnings.h>
 
 namespace systemN { 
 
 #ifdef _WIN32
+
+#ifdef _MSC_VER
+#pragma warning (disable:4820) //  'systemN::exe::parent::SHandle': '4' bytes padding added
+#pragma warning (disable:5045) //  Compiler will insert Spectre mitigation for memory load if
+#endif
 
 #ifndef lblcontainer_of
 #define lblcontainer_of(_ptr,_type,_member) (_type*)(  ((char*)(_ptr)) + (size_t)( (char*)(&((_type *)0)->_member) )  )

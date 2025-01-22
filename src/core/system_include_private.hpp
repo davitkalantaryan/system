@@ -7,8 +7,9 @@
 
 
 #include <system/exe/parent.hpp>
-#include <stdint.h>
 
+#include <cinternal/disable_compiler_warnings.h>
+#include <stdint.h>
 #ifdef _MSC_VER
 #pragma warning (push)
 #pragma warning (disable:4365)
@@ -17,6 +18,7 @@
 #ifdef _MSC_VER
 #pragma warning (pop)
 #endif
+#include <cinternal/undisable_compiler_warnings.h>
 
 //#define MAKE_SOME_TESTS
 
