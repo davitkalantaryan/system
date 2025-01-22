@@ -52,14 +52,14 @@ static Type_System_sslwrap_EVP_MD_CTX_free          s_System_sslwrap_EVP_MD_CTX_
 SYSTEM_EXPORT int System_sslwrap_InitializeFunctions(void) CPPUTILS_NOEXCEPT
 {
     s_System_sslwrap_OPENSSL_init_ssl = (Type_System_sslwrap_OPENSSL_init_ssl)SystemFindSymbolAddress("OPENSSL_init_ssl");
-    if(!s_System_sslwrap_OPENSSL_init_ssl){
-        return 1;
-    }
+    //if(!s_System_sslwrap_OPENSSL_init_ssl){
+    //    return 1;
+    //}
 
     s_System_sslwrap_OPENSSL_cleanup = (Type_System_sslwrap_OPENSSL_cleanup)SystemFindSymbolAddress("OPENSSL_cleanup");
-    if(!s_System_sslwrap_OPENSSL_cleanup){
-        return 1;
-    }
+    //if(!s_System_sslwrap_OPENSSL_cleanup){
+    //    return 1;
+    //}
 
     s_System_sslwrap_BIO_new_mem_buf = (Type_System_sslwrap_BIO_new_mem_buf)SystemFindSymbolAddress("BIO_new_mem_buf");
     if(!s_System_sslwrap_BIO_new_mem_buf){
@@ -67,9 +67,11 @@ SYSTEM_EXPORT int System_sslwrap_InitializeFunctions(void) CPPUTILS_NOEXCEPT
     }
 
     s_System_sslwrap_PEM_read_bio_RSA_PUBKEY = (Type_System_sslwrap_PEM_read_bio_RSA_PUBKEY)SystemFindSymbolAddress("PEM_read_bio_RSA_PUBKEY");
+#ifndef __APPLE__
     if(!s_System_sslwrap_PEM_read_bio_RSA_PUBKEY){
         return 1;
     }
+#endif
 
     s_System_sslwrap_BIO_free = (Type_System_sslwrap_BIO_free)SystemFindSymbolAddress("BIO_free");
     if(!s_System_sslwrap_BIO_free){
@@ -127,13 +129,18 @@ SYSTEM_EXPORT int System_sslwrap_InitializeFunctions(void) CPPUTILS_NOEXCEPT
 
 SYSTEM_EXPORT int System_sslwrap_OPENSSL_init_ssl(uint64_t a_opts, const OPENSSL_INIT_SETTINGS* a_settings) CPPUTILS_NOEXCEPT
 {
-    return (*s_System_sslwrap_OPENSSL_init_ssl)(a_opts,a_settings);
+    if(s_System_sslwrap_OPENSSL_init_ssl){
+        return (*s_System_sslwrap_OPENSSL_init_ssl)(a_opts,a_settings);
+    }
+    return 1;
 }
 
 
 SYSTEM_EXPORT void System_sslwrap_OPENSSL_cleanup(void) CPPUTILS_NOEXCEPT
 {
-    (*s_System_sslwrap_OPENSSL_cleanup)();
+    if(s_System_sslwrap_OPENSSL_cleanup){
+        (*s_System_sslwrap_OPENSSL_cleanup)();
+    }
 }
 
 
@@ -145,7 +152,47 @@ SYSTEM_EXPORT BIO* System_sslwrap_BIO_new_mem_buf(const void* a_buf, int a_len) 
 
 SYSTEM_EXPORT RSA* System_sslwrap_PEM_read_bio_RSA_PUBKEY(BIO* a_bp, RSA** a_x, pem_password_cb* a_cb, void* a_u) CPPUTILS_NOEXCEPT
 {
+#ifdef __APPLE__
+
+    if(s_System_sslwrap_PEM_read_bio_RSA_PUBKEY){
+        return (*s_System_sslwrap_PEM_read_bio_RSA_PUBKEY)(a_bp,a_x,a_cb,a_u);
+    }
+
+    char* pemData = nullptr;
+    long pemLength = BIO_get_mem_data(a_bp, &pemData);
+    if (pemLength <= 0 || !pemData) {
+        return nullptr; // Failed to read from BIO
+    }
+
+    // Create CFDataRef from PEM data
+    CFDataRef publicKeyData = CFDataCreate(nullptr, reinterpret_cast<const UInt8*>(pemData), pemLength);
+    if (!publicKeyData) {
+        return nullptr; // Failed to create CFData
+    }
+
+    // Create SecCertificateRef from CFDataRef
+    SecCertificateRef certificate = SecCertificateCreateWithData(nullptr, publicKeyData);
+    CFRelease(publicKeyData);
+
+    if (!certificate) {
+        return nullptr; // Failed to parse PEM as certificate
+    }
+
+    // Extract SecKeyRef from the certificate
+    SecKeyRef publicKey = SecCertificateCopyKey(certificate);
+    CFRelease(certificate);
+
+    if (!publicKey) {
+        return nullptr; // Failed to extract SecKey
+    }
+
+    // Placeholder: macOS doesn't support direct RSA conversions
+    CFRelease(publicKey);
+    return nullptr;
+
+#else
     return (*s_System_sslwrap_PEM_read_bio_RSA_PUBKEY)(a_bp,a_x,a_cb,a_u);
+#endif
 }
 
 
