@@ -18,49 +18,76 @@
 #include <QTimer>
 #include <QSslSocket>
 #include <QByteArray>
+#include <QFile>
 #include <cinternal/undisable_compiler_warnings.h>
 
 
-static void CallSslFunctions(void);
+#define SYSTEM_TEST_CAPACITY_FILE   "../../../../.tests/capacity.json"
+#define SYSTEM_TEST_SIGNATURE_FILE  "../../../../.tests/capacity_signature.bin"
+
+static bool VerifySignature(const QString& a_dataFile, const QString& a_signatureFile);
+static int ForceLoadSslLibraries(void);
 
 
 int main(int a_argc, char* a_argv[])
 {
     QCoreApplication aApp(a_argc, a_argv);
 
-    QNetworkAccessManager manager;
+    const char* cpcDataFile = SYSTEM_TEST_CAPACITY_FILE;
+    const char* cpcSignatureFile = SYSTEM_TEST_SIGNATURE_FILE;
 
-    // URL to fetch data from
-    QUrl url("https://jsonplaceholder.typicode.com/posts/1"); // Example URL
-    QNetworkRequest request(url);
+    if(a_argc>1){
+        cpcDataFile = a_argv[1];
+    }
 
-    // Send GET request
-    QNetworkReply *reply = manager.get(request);
+    if(a_argc>2){
+        cpcSignatureFile = a_argv[2];
+    }
 
-    // Connect the reply finished signal to handleNetworkReply
-    QObject::connect(reply, &QNetworkReply::finished, &aApp, [&reply]() {
-        if (reply->error() == QNetworkReply::NoError) {
-            // Print the data received from the URL
-            //qDebug() << "Response:" << reply->readAll();
-        } else {
-            // Print the error if any
-            qDebug() << "Error:" << reply->errorString();
-        }
-        reply->deleteLater(); // Clean up
+    qDebug()<<"cpcDataFile:"<<cpcDataFile<<", cpcSignatureFile:"<<cpcSignatureFile;
 
-        //void* pFuncAddress = SystemFindSymbolAddress(SYMBOL_NAME_TO_FIND);
-        //qDebug()<<"4. pFuncAddress: "<<pFuncAddress;
-        CallSslFunctions();
-    });
+    if(ForceLoadSslLibraries()){
+        return 1;
+    }
 
-    aApp.exec();
+    const bool bRet = VerifySignature(cpcDataFile,cpcSignatureFile);
+    if(bRet){
+        qDebug()<<"signature verified";
+    }
+
+    //QNetworkAccessManager manager;
+
+    //// URL to fetch data from
+    //QUrl url("https://jsonplaceholder.typicode.com/posts/1"); // Example URL
+    //QNetworkRequest request(url);
+
+    //// Send GET request
+    //QNetworkReply *reply = manager.get(request);
+
+    //// Connect the reply finished signal to handleNetworkReply
+    //QObject::connect(reply, &QNetworkReply::finished, &aApp, [&reply]() {
+    //    if (reply->error() == QNetworkReply::NoError) {
+    //        // Print the data received from the URL
+    //        //qDebug() << "Response:" << reply->readAll();
+    //    } else {
+    //        // Print the error if any
+    //        qDebug() << "Error:" << reply->errorString();
+    //    }
+    //    reply->deleteLater(); // Clean up
+
+    //    //void* pFuncAddress = SystemFindSymbolAddress(SYMBOL_NAME_TO_FIND);
+    //    //qDebug()<<"4. pFuncAddress: "<<pFuncAddress;
+    //    CallSslFunctions();
+    //});
+
+    //aApp.exec();
 
 
 	return 0;
 }
 
 
-static void CallSslFunctions(void)
+static bool VerifySignature(const QString& a_dataFile, const QString& a_signatureFile)
 {
     static const char* sccpFocustCapPublicKey =
         "-----BEGIN PUBLIC KEY-----\r\n"
@@ -73,29 +100,44 @@ static void CallSslFunctions(void)
         "rwIDAQAB\r\n"
         "-----END PUBLIC KEY-----";
 
+    bool bRet = false;
     int nCallRet;
     const QByteArray publicKeyContent = QByteArray(sccpFocustCapPublicKey);
 
-    const QByteArray dataContent = "";
-    const QByteArray signatureContent = "";
+    QFile data(a_dataFile);
+    if (!data.open(QIODevice::ReadOnly)) {
+        qCritical()<<"Unable to open data file.";
+        return false;
+    }
+    const QByteArray dataContent = data.readAll();
+    data.close();
+
+    // Load the signature
+    QFile signature(a_signatureFile);
+    if (!signature.open(QIODevice::ReadOnly)) {
+        qCritical("Unable to open signature file.");
+        return false;
+    }
+    const QByteArray signatureContent = signature.readAll();
+    signature.close();
 
     nCallRet = System_sslwrap_InitializeFunctions();
     if(nCallRet){
         qCritical()<<"System_sslwrap_InitializeFunctions failed";
-        return;
+        return false;
     }
 
     nCallRet = System_sslwrap_OPENSSL_init_ssl(0,CPPUTILS_NULL);
     if(!nCallRet){
         qCritical()<<"System_sslwrap_OPENSSL_init_ssl failed";
-        return;
+        return false;
     }
 
     BIO* const bio = System_sslwrap_BIO_new_mem_buf(publicKeyContent.data(), (int)publicKeyContent.size());
     if (!bio) {
         System_sslwrap_OPENSSL_cleanup();
         qCritical("Failed to create BIO for public key.");
-        return;
+        return false;
     }
 
     RSA* const rsa = System_sslwrap_PEM_read_bio_RSA_PUBKEY(bio, nullptr, nullptr, nullptr);
@@ -103,7 +145,7 @@ static void CallSslFunctions(void)
         qCritical("Failed to load RSA public key.");
         System_sslwrap_BIO_free(bio);
         System_sslwrap_OPENSSL_cleanup();
-        return;
+        return false;
     }
 
     EVP_PKEY* const evp_key = System_sslwrap_EVP_PKEY_new();
@@ -111,7 +153,7 @@ static void CallSslFunctions(void)
         qCritical("System_sslwrap_EVP_PKEY_new failed");
         System_sslwrap_BIO_free(bio);
         System_sslwrap_OPENSSL_cleanup();
-        return;
+        return false;
     }
 
     System_sslwrap_EVP_PKEY_assign_RSA(evp_key, rsa);
@@ -122,7 +164,7 @@ static void CallSslFunctions(void)
         System_sslwrap_EVP_PKEY_free(evp_key);
         System_sslwrap_BIO_free(bio);
         System_sslwrap_OPENSSL_cleanup();
-        return;
+        return false;
     }
 
     if (System_sslwrap_EVP_DigestVerifyInit(mdctx, nullptr, System_sslwrap_EVP_sha256(), nullptr, evp_key) <= 0) {
@@ -133,6 +175,7 @@ static void CallSslFunctions(void)
         int rc = System_sslwrap_EVP_DigestVerifyFinal(mdctx, reinterpret_cast<const unsigned char*>(signatureContent.data()), signatureContent.size());
         if (rc == 1) {
             //returnJsonObj["has_error"] = 0; // Signature is valid
+            bRet = true;
         } else if (rc == 0) {
         } else {
             qCritical("Error during EVP_DigestVerifyFinal.");
@@ -140,7 +183,22 @@ static void CallSslFunctions(void)
     }
 
     // cleaning up
+    System_sslwrap_EVP_MD_CTX_free(mdctx);
     System_sslwrap_EVP_PKEY_free(evp_key);
     System_sslwrap_BIO_free(bio);
     System_sslwrap_OPENSSL_cleanup();
+
+    return bRet;
+}
+
+
+static int ForceLoadSslLibraries(void)
+{
+    if (QSslSocket::supportsSsl()) {
+        qDebug() << "SSL Library Version:" << QSslSocket::sslLibraryVersionString();
+        qDebug() << "SSL Library Build Version:" << QSslSocket::sslLibraryBuildVersionString();
+        return 0;
+    }
+
+    return 1;
 }

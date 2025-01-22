@@ -41,6 +41,7 @@ SYSTEM_EXPORT int System_sslwrap_EVP_DigestVerifyInit(EVP_MD_CTX* a_ctx, EVP_PKE
 SYSTEM_EXPORT int System_sslwrap_EVP_DigestUpdate(EVP_MD_CTX* a_ctx, const void* a_d,size_t a_cnt) CPPUTILS_NOEXCEPT;
 SYSTEM_EXPORT int System_sslwrap_EVP_DigestVerifyFinal(EVP_MD_CTX* a_ctx, const unsigned char* a_sig, size_t a_siglen) CPPUTILS_NOEXCEPT;
 SYSTEM_EXPORT const EVP_MD* System_sslwrap_EVP_sha256(void) CPPUTILS_NOEXCEPT;
+SYSTEM_EXPORT void System_sslwrap_EVP_MD_CTX_free(EVP_MD_CTX* a_ctx) CPPUTILS_NOEXCEPT;
 
 
 # ifndef OPENSSL_NO_RSA

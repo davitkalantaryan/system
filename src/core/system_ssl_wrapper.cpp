@@ -30,6 +30,7 @@ typedef int             (*Type_System_sslwrap_EVP_DigestVerifyInit)(EVP_MD_CTX*,
 typedef int             (*Type_System_sslwrap_EVP_DigestUpdate)(EVP_MD_CTX*, const void*,size_t);
 typedef int             (*Type_System_sslwrap_EVP_DigestVerifyFinal)(EVP_MD_CTX*, const unsigned char*, size_t);
 typedef const EVP_MD*   (*Type_System_sslwrap_EVP_sha256)(void);
+typedef void            (*Type_System_sslwrap_EVP_MD_CTX_free)(EVP_MD_CTX*);
 
 
 static Type_System_sslwrap_OPENSSL_init_ssl         s_System_sslwrap_OPENSSL_init_ssl = CPPUTILS_NULL;
@@ -45,6 +46,7 @@ static Type_System_sslwrap_EVP_DigestVerifyInit     s_System_sslwrap_EVP_DigestV
 static Type_System_sslwrap_EVP_DigestUpdate         s_System_sslwrap_EVP_DigestUpdate = CPPUTILS_NULL;
 static Type_System_sslwrap_EVP_DigestVerifyFinal    s_System_sslwrap_EVP_DigestVerifyFinal = CPPUTILS_NULL;
 static Type_System_sslwrap_EVP_sha256               s_System_sslwrap_EVP_sha256 = CPPUTILS_NULL;
+static Type_System_sslwrap_EVP_MD_CTX_free          s_System_sslwrap_EVP_MD_CTX_free = CPPUTILS_NULL;
 
 
 SYSTEM_EXPORT int System_sslwrap_InitializeFunctions(void) CPPUTILS_NOEXCEPT
@@ -111,6 +113,11 @@ SYSTEM_EXPORT int System_sslwrap_InitializeFunctions(void) CPPUTILS_NOEXCEPT
 
     s_System_sslwrap_EVP_sha256 = (Type_System_sslwrap_EVP_sha256)SystemFindSymbolAddress("EVP_sha256");
     if(!s_System_sslwrap_EVP_sha256){
+        return 1;
+    }
+
+    s_System_sslwrap_EVP_MD_CTX_free = (Type_System_sslwrap_EVP_MD_CTX_free)SystemFindSymbolAddress("EVP_MD_CTX_free");
+    if(!s_System_sslwrap_EVP_MD_CTX_free){
         return 1;
     }
 
@@ -193,6 +200,12 @@ SYSTEM_EXPORT int System_sslwrap_EVP_DigestVerifyFinal(EVP_MD_CTX* a_ctx, const 
 SYSTEM_EXPORT const EVP_MD* System_sslwrap_EVP_sha256(void) CPPUTILS_NOEXCEPT
 {
     return (*s_System_sslwrap_EVP_sha256)();
+}
+
+
+SYSTEM_EXPORT void System_sslwrap_EVP_MD_CTX_free(EVP_MD_CTX* a_ctx) CPPUTILS_NOEXCEPT
+{
+    (*s_System_sslwrap_EVP_MD_CTX_free)(a_ctx);
 }
 
 
