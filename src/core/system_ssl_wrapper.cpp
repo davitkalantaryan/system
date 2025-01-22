@@ -14,8 +14,10 @@
 #include <system/find_symbol_address.h>
 #include <cinternal/disable_compiler_warnings.h>
 #ifdef __APPLE__
+#include <stdlib.h>
 #include <Security/Security.h>
 #include <CoreFoundation/CoreFoundation.h>
+#include <openssl/evp.h>
 #endif
 #include <cinternal/undisable_compiler_warnings.h>
 
@@ -38,6 +40,10 @@ typedef int             (*Type_System_sslwrap_EVP_DigestVerifyFinal)(EVP_MD_CTX*
 typedef const EVP_MD*   (*Type_System_sslwrap_EVP_sha256)(void);
 typedef void            (*Type_System_sslwrap_EVP_MD_CTX_free)(EVP_MD_CTX*);
 typedef int             (*Type_System_sslwrap_BIO_read)(BIO*, void*, int);
+#ifdef __APPLE__
+typedef SecKeyRef       (*Type_System_sslwrap_SecCertificateCopyKey)(SecCertificateRef);
+typedef SecCertificateRef   (*Type_System_sslwrap_SecCertificateCreateWithData)(CFAllocatorRef __nullable , CFDataRef );
+#endif
 
 
 static Type_System_sslwrap_OPENSSL_init_ssl         s_System_sslwrap_OPENSSL_init_ssl = CPPUTILS_NULL;
@@ -55,6 +61,12 @@ static Type_System_sslwrap_EVP_DigestVerifyFinal    s_System_sslwrap_EVP_DigestV
 static Type_System_sslwrap_EVP_sha256               s_System_sslwrap_EVP_sha256 = CPPUTILS_NULL;
 static Type_System_sslwrap_EVP_MD_CTX_free          s_System_sslwrap_EVP_MD_CTX_free = CPPUTILS_NULL;
 static Type_System_sslwrap_BIO_read                 s_System_sslwrap_BIO_read = CPPUTILS_NULL;
+#ifdef __APPLE__
+static Type_System_sslwrap_SecCertificateCopyKey    s_System_sslwrap_SecCertificateCopyKey = CPPUTILS_NULL;
+static Type_System_sslwrap_SecCertificateCreateWithData            s_System_sslwrap_SecCertificateCreateWithData = CPPUTILS_NULL;
+// SecCertificateRef SecCertificateCreateWithData(CFAllocatorRef __nullable allocator, CFDataRef data);
+
+#endif
 
 
 SYSTEM_EXPORT int System_sslwrap_InitializeFunctions(void) CPPUTILS_NOEXCEPT
@@ -92,16 +104,20 @@ SYSTEM_EXPORT int System_sslwrap_InitializeFunctions(void) CPPUTILS_NOEXCEPT
     }
 
     s_System_sslwrap_EVP_PKEY_assign = (Type_System_sslwrap_EVP_PKEY_assign)SystemFindSymbolAddress("EVP_PKEY_assign");
+#ifndef __APPLE__
     if(!s_System_sslwrap_EVP_PKEY_assign){
         return 1;
     }
+#endif
 
-    s_System_sslwrap_EVP_MD_CTX_new = (Type_System_sslwrap_EVP_MD_CTX_new)SystemFindSymbolAddress("EVP_MD_CTX_new");
+    s_System_sslwrap_EVP_MD_CTX_new = (Type_System_sslwrap_EVP_MD_CTX_new)SystemFindSymbolAddress("EVP_MD_CTX_new");    
+#ifndef __APPLE__
     if(!s_System_sslwrap_EVP_MD_CTX_new){
         return 1;
     }
+#endif
 
-    s_System_sslwrap_EVP_PKEY_free = (Type_System_sslwrap_EVP_PKEY_free)SystemFindSymbolAddress("EVP_PKEY_free");
+    s_System_sslwrap_EVP_PKEY_free = (Type_System_sslwrap_EVP_PKEY_free)SystemFindSymbolAddress("EVP_PKEY_free");    
     if(!s_System_sslwrap_EVP_PKEY_free){
         return 1;
     }
@@ -127,17 +143,100 @@ SYSTEM_EXPORT int System_sslwrap_InitializeFunctions(void) CPPUTILS_NOEXCEPT
     }
 
     s_System_sslwrap_EVP_MD_CTX_free = (Type_System_sslwrap_EVP_MD_CTX_free)SystemFindSymbolAddress("EVP_MD_CTX_free");
+#ifndef __APPLE__
     if(!s_System_sslwrap_EVP_MD_CTX_free){
         return 1;
     }
+#endif
 
     s_System_sslwrap_BIO_read = (Type_System_sslwrap_BIO_read)SystemFindSymbolAddress("BIO_read");
     if(!s_System_sslwrap_BIO_read){
         return 1;
     }
 
+#ifdef __APPLE__
+
+    s_System_sslwrap_SecCertificateCopyKey = (Type_System_sslwrap_SecCertificateCopyKey)SystemFindSymbolAddress("SecCertificateCopyKey");
+    if(!s_System_sslwrap_SecCertificateCopyKey){
+        return 1;
+    }
+
+    s_System_sslwrap_SecCertificateCreateWithData = (Type_System_sslwrap_SecCertificateCreateWithData)SystemFindSymbolAddress("SecCertificateCreateWithData");
+    if(!s_System_sslwrap_SecCertificateCreateWithData){
+        return 1;
+    }
+
+#endif
+
     return 0;
 }
+
+
+#ifdef __APPLE__
+
+static SecKeyRef System_sslwrap_SecCertificateCopyKey(SecCertificateRef a_certRef) CPPUTILS_NOEXCEPT
+{
+    return (*s_System_sslwrap_SecCertificateCopyKey)(a_certRef);
+}
+
+
+static SecCertificateRef System_sslwrap_SecCertificateCreateWithData(CFAllocatorRef __nullable a_allocator, CFDataRef a_data) CPPUTILS_NOEXCEPT
+{
+    return (*s_System_sslwrap_SecCertificateCreateWithData)(a_allocator,a_data);
+}
+
+
+static long System_sslwrap_BIO_get_mem_data(BIO* a_bp, char** a_pemData) CPPUTILS_NOEXCEPT
+{
+    if (!a_bp || !a_pemData) {
+        return -1; // Invalid input
+    }
+
+    // Estimate the size of the BIO buffer (using a sufficiently large buffer)
+    constexpr size_t bufferSize = 8192; // Adjust based on expected input size
+    char* buffer = static_cast<char*>(malloc(bufferSize));
+    if (!buffer) {
+        return -1; // Memory allocation failure
+    }
+
+    // Read data from BIO into the buffer
+    int bytesRead = System_sslwrap_BIO_read(a_bp, buffer, bufferSize);
+    if (bytesRead <= 0) {
+        free(buffer); // Cleanup in case of failure
+        return -1;    // Read failure or no data available
+    }
+
+    // Assign the buffer to the output pointer and return the number of bytes read
+    *a_pemData = buffer;
+    return bytesRead;
+}
+
+
+static inline int System_sslwrap_EVP_PKEY_assignInline(EVP_PKEY* a_pkey, int a_type, void* a_key) CPPUTILS_NOEXCEPT {
+    if (!a_pkey || !a_key) {
+        return 0; // Failure due to invalid input
+    }
+
+    // Set the type and key
+    a_pkey->type = a_type;
+    a_pkey->pkey.ptr = a_key;
+
+    return 1; // Success
+}
+
+
+static inline int System_sslwrap_EVP_MD_CTX_resetInline(EVP_MD_CTX* a_ctx) CPPUTILS_NOEXCEPT {
+    if(a_ctx){
+        free(a_ctx->md_data);
+        memset(a_ctx,0,sizeof(EVP_MD_CTX));
+        return 1;
+    }
+
+    return 0;
+}
+
+
+#endif  //  #ifdef __APPLE__
 
 
 SYSTEM_EXPORT int System_sslwrap_OPENSSL_init_ssl(uint64_t a_opts, const OPENSSL_INIT_SETTINGS* a_settings) CPPUTILS_NOEXCEPT
@@ -163,33 +262,6 @@ SYSTEM_EXPORT BIO* System_sslwrap_BIO_new_mem_buf(const void* a_buf, int a_len) 
 }
 
 
-#ifdef __APPLE__
-long System_sslwrap_BIO_get_mem_data(BIO* a_bp, char** a_pemData) {
-    if (!a_bp || !a_pemData) {
-        return -1; // Invalid input
-    }
-
-    // Estimate the size of the BIO buffer (using a sufficiently large buffer)
-    constexpr size_t bufferSize = 8192; // Adjust based on expected input size
-    char* buffer = static_cast<char*>(malloc(bufferSize));
-    if (!buffer) {
-        return -1; // Memory allocation failure
-    }
-
-    // Read data from BIO into the buffer
-    int bytesRead = BIO_read(a_bp, buffer, bufferSize);
-    if (bytesRead <= 0) {
-        free(buffer); // Cleanup in case of failure
-        return -1;    // Read failure or no data available
-    }
-
-    // Assign the buffer to the output pointer and return the number of bytes read
-    *a_pemData = buffer;
-    return bytesRead;
-}
-#endif
-
-
 SYSTEM_EXPORT RSA* System_sslwrap_PEM_read_bio_RSA_PUBKEY(BIO* a_bp, RSA** a_x, pem_password_cb* a_cb, void* a_u) CPPUTILS_NOEXCEPT
 {
 #ifdef __APPLE__
@@ -213,7 +285,7 @@ SYSTEM_EXPORT RSA* System_sslwrap_PEM_read_bio_RSA_PUBKEY(BIO* a_bp, RSA** a_x, 
     }
 
     // Create SecCertificateRef from CFDataRef
-    SecCertificateRef certificate = SecCertificateCreateWithData(nullptr, publicKeyData);
+    SecCertificateRef certificate = System_sslwrap_SecCertificateCreateWithData(nullptr, publicKeyData);
     CFRelease(publicKeyData);
 
     if (!certificate) {
@@ -221,7 +293,7 @@ SYSTEM_EXPORT RSA* System_sslwrap_PEM_read_bio_RSA_PUBKEY(BIO* a_bp, RSA** a_x, 
     }
 
     // Extract SecKeyRef from the certificate
-    SecKeyRef publicKey = SecCertificateCopyKey(certificate);
+    SecKeyRef publicKey = System_sslwrap_SecCertificateCopyKey(certificate);
     CFRelease(certificate);
 
     if (!publicKey) {
@@ -252,18 +324,40 @@ SYSTEM_EXPORT EVP_PKEY* System_sslwrap_EVP_PKEY_new(void) CPPUTILS_NOEXCEPT
 
 SYSTEM_EXPORT int System_sslwrap_EVP_PKEY_assign(EVP_PKEY* a_pkey, int a_type, void* a_key) CPPUTILS_NOEXCEPT
 {
+#ifdef __APPLE__
+
+    if(s_System_sslwrap_EVP_PKEY_assign){
+        return (*s_System_sslwrap_EVP_PKEY_assign)(a_pkey,a_type,a_key);
+    }
+
+    return System_sslwrap_EVP_PKEY_assignInline(a_pkey,a_type,a_key);
+
+#else
     return (*s_System_sslwrap_EVP_PKEY_assign)(a_pkey,a_type,a_key);
+#endif
 }
 
 
 SYSTEM_EXPORT EVP_MD_CTX* System_sslwrap_EVP_MD_CTX_new(void) CPPUTILS_NOEXCEPT
 {
+#ifdef __APPLE__
+
+    if(s_System_sslwrap_EVP_MD_CTX_new){
+        return (*s_System_sslwrap_EVP_MD_CTX_new)();
+    }
+
+    EVP_MD_CTX* const pRet = (EVP_MD_CTX*)calloc(1,sizeof(EVP_MD_CTX));
+    return pRet;
+
+#else
     return (*s_System_sslwrap_EVP_MD_CTX_new)();
+#endif
 }
 
 
 SYSTEM_EXPORT void System_sslwrap_EVP_PKEY_free(EVP_PKEY* a_pkey) CPPUTILS_NOEXCEPT
 {
+    // System_sslwrap_EVP_MD_CTX_resetInline
     (*s_System_sslwrap_EVP_PKEY_free)(a_pkey);
 }
 
@@ -294,7 +388,21 @@ SYSTEM_EXPORT const EVP_MD* System_sslwrap_EVP_sha256(void) CPPUTILS_NOEXCEPT
 
 SYSTEM_EXPORT void System_sslwrap_EVP_MD_CTX_free(EVP_MD_CTX* a_ctx) CPPUTILS_NOEXCEPT
 {
+#ifdef __APPLE__
+
+    if(s_System_sslwrap_EVP_MD_CTX_free){
+        (*s_System_sslwrap_EVP_MD_CTX_free)(a_ctx);
+        return;
+    }
+
+    if(a_ctx){
+        System_sslwrap_EVP_MD_CTX_resetInline(a_ctx);
+        free(a_ctx);
+    }
+
+#else
     (*s_System_sslwrap_EVP_MD_CTX_free)(a_ctx);
+#endif
 }
 
 

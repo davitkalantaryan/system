@@ -37,10 +37,10 @@ static const ConstCharPtr  s_symbolsNames[] ={
     "EVP_DigestVerifyFinal",
     "EVP_sha256",
     "EVP_MD_CTX_free",
-    "BIO_get_mem_data",
-    "BIO_pending",
-    "BIO_get_mem_ptr",
-    "BIO_read"
+    "BIO_read",
+    "SecCertificateCopyKey",
+    "SecCertificateCreateWithData",
+    "EVP_MD_CTX_reset"
 };
 
 
