@@ -26,6 +26,7 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <Windows.h>
+#include <cinternal/win_threading.h>
 #define UNINITED_HANDLE	CPPUTILS_NULL
 typedef DWORD		sssize_t;
 typedef HANDLE		handle_t;

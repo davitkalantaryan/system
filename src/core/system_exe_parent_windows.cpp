@@ -38,8 +38,8 @@ namespace systemN { namespace exe { namespace parent{
 
 static void Clear(struct SHandle* a_handle);
 static void ClearAllHandlesStatic(struct SHandle* a_handle);
-static DWORD WINAPI  StdOutputsRedirectorThread( ::LPVOID lpThreadParameter);
-static DWORD WINAPI  StdInputRedirectorThread(::LPVOID lpThreadParameter);
+static cinternal_win_thread_ret_t CPPUTILS_WIN_THR_CALL StdOutputsRedirectorThread(void* a_lpThreadParameter);
+static cinternal_win_thread_ret_t CPPUTILS_WIN_THR_CALL StdInputRedirectorThread(void* a_lpThreadParameter);
 static void AfterProcessTermination(struct SHandle* a_handle);
 
 THandle RunNoWaitU(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWriteToChildDataPipes, char* a_argv[], const char* a_cpcAdditionalSearchPath, uint8_t a_bUsingStdPipes)
@@ -155,15 +155,13 @@ THandle RunNoWaitW(int8_t a_numberOfReadFromChildDataPipes, int8_t a_numberOfWri
 
 	pHandle->stdPipesUsed = a_bUsingStdPipes;
 	if((a_bUsingStdPipes&USE_STANDARD_STDOUT)||(a_bUsingStdPipes&USE_STANDARD_STDERR)){
-		pHandle->stdOutputsRedirectorThread = CreateThread(CPPUTILS_NULL,0,&StdOutputsRedirectorThread,pHandle,0,CPPUTILS_NULL);
-		if(!pHandle->stdOutputsRedirectorThread){
+        if(cinternal_win_thread_create(&(pHandle->stdOutputsRedirectorThread), &StdOutputsRedirectorThread, pHandle, CPPUTILS_NULL)){
 			Clear(pHandle);
 			return CPPUTILS_NULL;
 		}
 	}
 	if(a_bUsingStdPipes&USE_STANDARD_STDIN){
-		pHandle->stdInputRedirectorThread = CreateThread(CPPUTILS_NULL,0,&StdInputRedirectorThread,pHandle,0,CPPUTILS_NULL);
-		if(!pHandle->stdInputRedirectorThread){
+        if (cinternal_win_thread_create(&(pHandle->stdInputRedirectorThread), &StdInputRedirectorThread, pHandle, CPPUTILS_NULL)) {
 			Clear(pHandle);
 			return CPPUTILS_NULL;
 		}
@@ -348,7 +346,7 @@ struct SOverlapped2 {
 };
 
 
-static DWORD WINAPI StdInputRedirectorThread( ::LPVOID a_lpThreadParameter)
+static cinternal_win_thread_ret_t CPPUTILS_WIN_THR_CALL StdInputRedirectorThread( void* a_lpThreadParameter)
 {
 	struct SHandle* pHandle = static_cast<struct SHandle*>(a_lpThreadParameter);
 	HANDLE  stdinToRead = GetStdHandle(STD_INPUT_HANDLE);
@@ -361,7 +359,8 @@ static DWORD WINAPI StdInputRedirectorThread( ::LPVOID a_lpThreadParameter)
 		}
 	}
 
-	return 0;
+    cinternal_win_thread_exit_thread(0);
+    CINTERNAL_UNREACH_CODE_AFTER_WIN_THR_EXIT(return 0)
 }
 
 
@@ -381,7 +380,7 @@ static VOID WINAPI OVERLAPPED_READ_COMPLETION_ROUTINE_GEN_STAT2(
 }
 
 
-static DWORD WINAPI StdOutputsRedirectorThread( ::LPVOID a_lpThreadParameter)
+static cinternal_win_thread_ret_t CPPUTILS_WIN_THR_CALL StdOutputsRedirectorThread( void* a_lpThreadParameter)
 {
 	struct SHandle* pHandle = static_cast<struct SHandle*>(a_lpThreadParameter);
 	SOverlapped2   vOverlapped[2];
@@ -438,8 +437,8 @@ static DWORD WINAPI StdOutputsRedirectorThread( ::LPVOID a_lpThreadParameter)
 
 	}
 
-
-	return 0;
+    cinternal_win_thread_exit_thread(0);
+    CINTERNAL_UNREACH_CODE_AFTER_WIN_THR_EXIT(return 0)
 }
 
 
@@ -480,17 +479,17 @@ static void ClearAllHandlesStatic(struct SHandle* a_handle)
 
 
 	if(a_handle->stdOutputsRedirectorThread){
-		QueueUserAPC(&UserAPCfunction,a_handle->stdOutputsRedirectorThread,0);
-		WaitForSingleObject(a_handle->stdOutputsRedirectorThread,INFINITE);
-		CloseHandle(a_handle->stdOutputsRedirectorThread);
-		a_handle->stdOutputsRedirectorThread = CPPUTILS_NULL;
+		QueueUserAPC(&UserAPCfunction,(HANDLE)a_handle->stdOutputsRedirectorThread,0);
+		WaitForSingleObject((HANDLE)a_handle->stdOutputsRedirectorThread,INFINITE);
+		CloseHandle((HANDLE)a_handle->stdOutputsRedirectorThread);
+		a_handle->stdOutputsRedirectorThread = (cinternal_win_thread_t)0;
 	}
 
 	if(a_handle->stdInputRedirectorThread){
-		CancelSynchronousIo(a_handle->stdInputRedirectorThread);
-		WaitForSingleObject(a_handle->stdInputRedirectorThread,INFINITE);
-		CloseHandle(a_handle->stdInputRedirectorThread);
-		a_handle->stdInputRedirectorThread = CPPUTILS_NULL;
+		CancelSynchronousIo((HANDLE)a_handle->stdInputRedirectorThread);
+		WaitForSingleObject((HANDLE)a_handle->stdInputRedirectorThread,INFINITE);
+		CloseHandle((HANDLE)a_handle->stdInputRedirectorThread);
+		a_handle->stdInputRedirectorThread = (cinternal_win_thread_t)0;
 	}
 
 	// standard pipes

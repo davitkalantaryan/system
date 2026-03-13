@@ -50,8 +50,8 @@ struct SHandle{
 	uint64_t				shouldRun : 1;
 	uint64_t				isExeFinished : 1;
 	uint64_t				reserved64bit : 6;
-	HANDLE					stdOutputsRedirectorThread;
-	HANDLE					stdInputRedirectorThread;
+    cinternal_win_thread_t	stdOutputsRedirectorThread;
+    cinternal_win_thread_t	stdInputRedirectorThread;
 	//HANDLE					stdinToWriteNoClose;
 	HANDLE					stdoutToRead;
 	HANDLE					stderrToRead;
