@@ -136,5 +136,11 @@
     <None Include="..\system_all_qt\system_all.pro">
       <Filter>files</Filter>
     </None>
+    <None Include="..\..\scripts\unix_source_per_session.sh">
+      <Filter>repo_files\scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\windows_source_per_session.bat">
+      <Filter>repo_files\scripts</Filter>
+    </None>
   </ItemGroup>
 </Project>
